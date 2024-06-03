@@ -32,7 +32,7 @@
   map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
   // 지도 중심 좌표 변화 이벤트를 등록한다
-  kakao.maps.event.addListener(map, 'center_changed', function () {//곧 사용할수 없게 될 심볼= 지금은 사용할 수 있는듯!!!
+  kakao.maps.event.addListener(map, 'center_changed', function () {
     console.log('지도의 중심 좌표는 ' + map.getCenter().toString() +' 입니다.');
   });
 
@@ -46,7 +46,6 @@
     var mapBounds = map.getBounds(),
         message = '지도의 남서쪽, 북동쪽 영역좌표는 ' +
             mapBounds.toString() + '입니다.';
-
     console.log(message);
   });
 
