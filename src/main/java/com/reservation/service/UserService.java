@@ -1,8 +1,14 @@
 package com.reservation.service;
 
+import static com.reservation.exception.ErrorCode.ALREADY_VERIFY;
+import static com.reservation.exception.ErrorCode.EXPIRE_CODE;
+import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
+import static com.reservation.exception.ErrorCode.WRONG_VERIFICATION;
+
 import com.reservation.dto.SignUpForm;
 import com.reservation.dto.UserDto;
 import com.reservation.entity.User;
+import com.reservation.exception.Exception;
 import com.reservation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -16,13 +22,32 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  public User signUp(SignUpForm form){
+  public User signUp(SignUpForm form) {
     return userRepository.save(User.from(form));
   }
 
   @Transactional
-  public UserDto userSignUp(SignUpForm form){
+  public UserDto userSignUp(SignUpForm form) {
     return UserDto.from(signUp(form));
+  }
+
+  @Transactional
+  public void verifyEmail(String email, String code) {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new Exception(USER_NOT_FOUND));
+    if (user.isVerify()) {
+      throw new Exception(ALREADY_VERIFY);
+    } else if (!user.getVerificationCode().equals(code)) {
+      throw new Exception(WRONG_VERIFICATION);
+    } else if (user.getVerifyExpiredAt().isBefore(LocalDateTime.now())) {
+      throw new Exception(EXPIRE_CODE);
+    }
+    user.verificationSuccess(true);
+  }
+
+  public Optional<User> findValidUser(String email, String password){
+    return userRepository.findByEmail(email).filter(
+        user -> user.getPassword().equals(password) && user.isVerify());
   }
 
   @Transactional
@@ -35,8 +60,6 @@ public class UserService {
     }
     return null;
   }
-
-
 
 
 }
