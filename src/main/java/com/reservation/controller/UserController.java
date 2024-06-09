@@ -26,11 +26,6 @@ public class UserController {
   //회원가입
   @PostMapping("/signUp")
   public ResponseEntity<UserDto> signUp(@RequestBody SignUpForm form){
-    String code = getRandomCode();
-    User u = userService.signUp(form);
-
-    userService.validateEmail(u.getId(), code);
-
     return ResponseEntity.ok(userService.userSignUp(form));
   }
 
@@ -47,9 +42,7 @@ public class UserController {
     return ResponseEntity.ok(loginService.LoginToken(form));
   }
 
-  private String getRandomCode() {
-    return RandomStringUtils.random(10, true, true);
-  }
+
 
 
 

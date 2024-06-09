@@ -1,5 +1,6 @@
 package com.reservation.service;
 
+import static com.reservation.exception.ErrorCode.ALREADY_REGISTER_USER;
 import static com.reservation.exception.ErrorCode.ALREADY_VERIFY;
 import static com.reservation.exception.ErrorCode.EXPIRE_CODE;
 import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
@@ -14,6 +15,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,13 +24,27 @@ public class UserService {
 
   private final UserRepository userRepository;
 
+  private String getRandomCode() {
+    return RandomStringUtils.random(10, true, true);
+  }
+
   public User signUp(SignUpForm form) {
     return userRepository.save(User.from(form));
   }
 
   @Transactional
   public UserDto userSignUp(SignUpForm form) {
-    return UserDto.from(signUp(form));
+    if (userRepository.existsByEmail(form.getEmail())){
+      throw new Exception(ALREADY_REGISTER_USER);
+    }else{
+      User u = signUp(form);
+
+      String code = getRandomCode();
+
+      validateEmail(u.getId(), code);
+
+      return UserDto.from(u);
+    }
   }
 
   @Transactional
