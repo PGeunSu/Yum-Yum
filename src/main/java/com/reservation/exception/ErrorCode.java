@@ -16,7 +16,11 @@ public enum ErrorCode {
   //Verify
   ALREADY_VERIFY(HttpStatus.BAD_REQUEST, "이미 인증이 완료되었습니다."),
   WRONG_VERIFICATION(HttpStatus.BAD_REQUEST, "잘못된 인증 시도입니다."),
-  EXPIRE_CODE(HttpStatus.BAD_REQUEST, "인증시간이 만료되었습니다.");
+  EXPIRE_CODE(HttpStatus.BAD_REQUEST, "인증시간이 만료되었습니다."),
+
+  //reservation
+  ALREADY_EXIST_STORE(HttpStatus.BAD_REQUEST,"이미 존재하는 매장 이름입니다."),
+  STORE_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 매장입니다.");
 
 
 

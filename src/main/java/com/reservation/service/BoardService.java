@@ -1,16 +1,16 @@
 package com.reservation.service;
 
-import com.reservation.dto.BoardRequestDto;
-import com.reservation.dto.BoardListResponseDto;
-import com.reservation.dto.BoardResponseDto;
-import com.reservation.entity.Board;
+import com.reservation.dto.board.BoardRequestDto;
+import com.reservation.dto.board.BoardListResponseDto;
+import com.reservation.dto.board.BoardResponseDto;
+import com.reservation.entity.board.Board;
 import com.reservation.repository.BoardRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor

@@ -2,7 +2,7 @@ package com.reservation.entity.user;
 
 import static com.reservation.type.Authority.ROLE_USER;
 
-import com.reservation.dto.SignUpForm;
+import com.reservation.dto.user.SignUpForm;
 import com.reservation.type.Authority;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

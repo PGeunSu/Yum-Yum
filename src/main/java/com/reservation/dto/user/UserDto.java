@@ -1,4 +1,4 @@
-package com.reservation.dto;
+package com.reservation.dto.user;
 
 import com.reservation.entity.user.User;
 import java.time.LocalDateTime;

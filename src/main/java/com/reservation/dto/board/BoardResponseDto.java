@@ -1,6 +1,6 @@
-package com.reservation.dto;
+package com.reservation.dto.board;
 
-import com.reservation.entity.Board;
+import com.reservation.entity.board.Board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,4 +1,5 @@
-package com.reservation.entity;
+package com.reservation.entity.reservation;
+import com.reservation.entity.user.User;
 import com.reservation.type.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.*;

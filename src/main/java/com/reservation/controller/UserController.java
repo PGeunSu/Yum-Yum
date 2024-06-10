@@ -1,8 +1,8 @@
 package com.reservation.controller;
 
-import com.reservation.dto.SignInForm;
-import com.reservation.dto.SignUpForm;
-import com.reservation.dto.UserDto;
+import com.reservation.dto.user.SignInForm;
+import com.reservation.dto.user.SignUpForm;
+import com.reservation.dto.user.UserDto;
 import com.reservation.service.LoginService;
 import com.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;

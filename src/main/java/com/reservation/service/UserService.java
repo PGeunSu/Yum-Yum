@@ -6,8 +6,8 @@ import static com.reservation.exception.ErrorCode.EXPIRE_CODE;
 import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
 import static com.reservation.exception.ErrorCode.WRONG_VERIFICATION;
 
-import com.reservation.dto.SignUpForm;
-import com.reservation.dto.UserDto;
+import com.reservation.dto.user.SignUpForm;
+import com.reservation.dto.user.UserDto;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.repository.UserRepository;
