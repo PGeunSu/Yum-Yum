@@ -1,6 +1,7 @@
 package com.reservation.dto;
 
-mport lombok.Getter;
+import com.reservation.entity.Board;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;

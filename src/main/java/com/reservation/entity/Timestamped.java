@@ -1,4 +1,4 @@
-package com.reservation.board;
+package com.reservation.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
