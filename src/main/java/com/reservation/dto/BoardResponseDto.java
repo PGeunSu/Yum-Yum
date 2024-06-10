@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
-public class BoardResponsedto {
+public class BoardResponseDto {
 
   private String title;
 
@@ -18,7 +18,7 @@ public class BoardResponsedto {
   private LocalDateTime modifiedAt;
 
   // board의 정보를 받아 boardResponsedto 생성
-  public BoardResponsedto(Board board) {
+  public BoardResponseDto(Board board) {
     this.title = board.getTitle();
     this.content = board.getContent();
     this.createdAt = board.getModifiedAt();

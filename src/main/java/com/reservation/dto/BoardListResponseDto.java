@@ -10,7 +10,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class BoardListResponsedto {
+public class BoardListResponseDto {
   // 제목
   private String title;
 
@@ -22,13 +22,13 @@ public class BoardListResponsedto {
   private LocalDateTime modifiedAt;
 
   // Entity -> dto
-  public BoardListResponsedto(Board board) {
+  public BoardListResponseDto(Board board) {
     this.title = board.getTitle();
     this.createdAt = board.getModifiedAt();
     this.modifiedAt = board.getCreatedAt();
   }
 
-  public BoardListResponsedto(Optional<Board> board) {
+  public BoardListResponseDto(Optional<Board> board) {
     this.title = board.get().getTitle();
     this.createdAt = board.get().getModifiedAt();
     this.modifiedAt = board.get().getCreatedAt();

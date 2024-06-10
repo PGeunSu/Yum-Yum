@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class BoardRequestdto {
+public class BoardRequestDto {
 
   private String title;
 
