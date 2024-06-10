@@ -1,7 +1,7 @@
 package com.reservation.repository;
 
-import com.sparta.boardcrud.entity.Board;
-import com.sparta.boardcrud.entity.BoardListResponseDto;
+import com.reservation.entity.Board;
+import com.reservation.dto.BoardListResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

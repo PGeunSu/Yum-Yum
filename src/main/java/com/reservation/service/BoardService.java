@@ -1,16 +1,16 @@
 package com.reservation.service;
 
-import com.example.loginlivesession2.account.dto.request.BoardRequestDto;
-import com.example.loginlivesession2.account.dto.response.BoardListResponseDto;
-import com.example.loginlivesession2.account.dto.response.BoardResponseDto;
-import com.example.loginlivesession2.account.entity.Board;
-import com.example.loginlivesession2.account.repository.BoardRepository;
+import com.reservation.dto.BoardListResponseDto;
+import com.reservation.dto.BoardRequestDto;
+import com.reservation.dto.BoardResponseDto;
+import com.reservation.entity.Board;
+import com.reservation.repository.BoardRepository;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor

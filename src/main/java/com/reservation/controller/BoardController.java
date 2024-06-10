@@ -1,9 +1,9 @@
 package com.reservation.controller;
 
-import com.sparta.BoardAPI2.dto.BoardListResponseDto;
-import com.sparta.BoardAPI2.dto.BoardRequestDto;
-import com.sparta.BoardAPI2.dto.BoardResponseDto;
-import com.sparta.BoardAPI2.service.BoardService;
+import com.reservation.dto.BoardListResponseDto;
+import com.reservation.dto.BoardRequestDto;
+import com.reservation.dto.BoardResponseDto;
+import com.reservation.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,19 +38,19 @@ public class BoardController {
   // 글 수정
   @PutMapping("/boards/{id}")
   public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-    return boardService.update(id,requestDto);
+    return boardService.updateBoard(id,requestDto);
   }
 
   // 글 삭제
   @DeleteMapping("/boards/{id}")
   public Long deleteBoard(@PathVariable Long id) {
-    return  boardService.delete(id);
+    return  boardService.deleteBoard(id);
   }
 
   // 비밀번호 확인
-  @GetMapping("/boards/check/{id}/{inputPassword}")
-  public boolean checkPassword(@PathVariable Long id,@PathVariable String inputPassword) {
-    return boardService.checkPassword(id, inputPassword);
-  }
+//  @GetMapping("/boards/check/{id}/{inputPassword}")
+//  public boolean checkPassword(@PathVariable Long id,@PathVariable String inputPassword) {
+//    return boardService.check(id, inputPassword);
+//  }
 }
 
