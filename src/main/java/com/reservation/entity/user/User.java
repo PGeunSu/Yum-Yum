@@ -1,4 +1,4 @@
-package com.reservation.entity;
+package com.reservation.entity.user;
 
 import static com.reservation.type.Authority.ROLE_USER;
 

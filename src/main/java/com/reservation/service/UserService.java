@@ -8,7 +8,7 @@ import static com.reservation.exception.ErrorCode.WRONG_VERIFICATION;
 
 import com.reservation.dto.SignUpForm;
 import com.reservation.dto.UserDto;
-import com.reservation.entity.User;
+import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.repository.UserRepository;
 import jakarta.transaction.Transactional;

@@ -4,7 +4,7 @@ import static com.reservation.exception.ErrorCode.LOGIN_CHECK_FAIL;
 import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
 
 import com.reservation.dto.SignInForm;
-import com.reservation.entity.User;
+import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.jwt.config.JwtTokenProvider;
 import com.reservation.repository.UserRepository;
