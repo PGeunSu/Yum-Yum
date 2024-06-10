@@ -20,53 +20,41 @@ public class MyHandler extends TextWebSocketHandler {
     final String enteredMessage = sessionId + "님이 입장하셨습니다.";
     sessions.put(sessionId, session);
 
-    sessions.values().forEach((s) -> {
-      try {
-        if (!s.getId().equals(sessionId) && s.isOpen()) {
-          s.sendMessage(new TextMessage(enteredMessage));
-        }
-      } catch (IOException e) {
-      }
-    });
+    sendMessage(sessionId, new TextMessage(enteredMessage));
   }
 
   //연결 후 메세지를 주고 받을 때 call
   @Override
   protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     final String sessionId = session.getId();
-    sessions.values().forEach((s) -> {
-      if (!s.getId().equals(sessionId) && s.isOpen()) {
-        try {
-          s.sendMessage(message);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
+    sendMessage(sessionId, message);
   }
 
   //웹소켓이 끊기면 call
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
     final String sessionId = session.getId();
-    final String leaveMessage = sessionId + "님이 퇴장하였습니다.";
-    sessions.remove(sessionId); //삭제
+    final String leaveMessage = sessionId + "님이 퇴장하셨습니다.";
+    sessions.remove(sessionId); // 삭제
 
-    //메세지 전송
-    sessions.values().forEach((s) -> {
-      if (!s.getId().equals(sessionId) && s.isOpen()) {
-        try {
-          s.sendMessage(new TextMessage(leaveMessage));
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
+    sendMessage(sessionId, new TextMessage(leaveMessage));
   }
 
   //통신 에러 발생 시 call
   @Override
   public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+
+  }
+
+  private void sendMessage(String sessionId, WebSocketMessage<?> message) {
+    sessions.values().forEach(s -> {
+      if (!s.getId().equals(sessionId) && s.isOpen()) {
+        try {
+          s.sendMessage(message);
+        } catch (IOException e) {
+        }
+      }
+    });
   }
 
 }
