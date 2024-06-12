@@ -34,9 +34,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Builder
 @EntityListeners(value = AuditingEntityListener.class)
-public class User implements UserDetails{
+public class User{
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true) //이메일은 unique 함
@@ -57,7 +58,7 @@ public class User implements UserDetails{
   @LastModifiedDate
   private LocalDateTime modifiedAt;
 
-  public void verificationSuccess(boolean verify){
+  public void verificationSuccess(boolean verify) {
     this.verify = verify;
   }
 
@@ -66,7 +67,7 @@ public class User implements UserDetails{
     this.verifyExpiredAt = verifyExpiredAt;
   }
 
-  public static User from(SignUpForm form){
+  public static User from(SignUpForm form) {
     return User.builder()
         .email(form.getEmail())
         .name(form.getName())
@@ -74,39 +75,5 @@ public class User implements UserDetails{
         .role(ROLE_USER)
         .verify(false)
         .build();
-  }
-
-
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    List<GrantedAuthority> roles = new ArrayList<>();
-    roles.add(new SimpleGrantedAuthority(this.role.toString()));
-    return roles;
-  }
-
-  @Override
-  public String getUsername() {
-    return "";
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return UserDetails.super.isAccountNonLocked();
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return UserDetails.super.isCredentialsNonExpired();
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return UserDetails.super.isEnabled();
   }
 }

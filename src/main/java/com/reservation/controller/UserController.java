@@ -3,7 +3,6 @@ package com.reservation.controller;
 import com.reservation.dto.user.SignInForm;
 import com.reservation.dto.user.SignUpForm;
 import com.reservation.dto.user.UserDto;
-import com.reservation.service.LoginService;
 import com.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   private final UserService  userService;
-  private final LoginService loginService;
 
   //회원가입
   @PostMapping("/signUp")
@@ -30,14 +28,14 @@ public class UserController {
   //회원가입 인증
   @GetMapping("/verify")
   public ResponseEntity<String> verifyUser(String email, String code){
-    loginService.userVerify(email, code);
+    userService.verifyEmail(email, code);
     return ResponseEntity.ok("인증이 완료되었습니다");
   }
 
   //로그인
   @PostMapping("/signIn")
   public ResponseEntity<String> signIn(@RequestBody SignInForm form){
-    return ResponseEntity.ok(loginService.LoginToken(form));
+    return ResponseEntity.ok(userService.LoginToken(form));
   }
 
 

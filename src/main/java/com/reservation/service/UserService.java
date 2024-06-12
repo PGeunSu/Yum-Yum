@@ -3,13 +3,16 @@ package com.reservation.service;
 import static com.reservation.exception.ErrorCode.ALREADY_REGISTER_USER;
 import static com.reservation.exception.ErrorCode.ALREADY_VERIFY;
 import static com.reservation.exception.ErrorCode.EXPIRE_CODE;
+import static com.reservation.exception.ErrorCode.LOGIN_CHECK_FAIL;
 import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
 import static com.reservation.exception.ErrorCode.WRONG_VERIFICATION;
 
+import com.reservation.dto.user.SignInForm;
 import com.reservation.dto.user.SignUpForm;
 import com.reservation.dto.user.UserDto;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
+import com.reservation.jwt.config.JwtTokenProvider;
 import com.reservation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final JwtTokenProvider jwtTokenProvider;
 
   private String getRandomCode() {
     return RandomStringUtils.random(10, true, true);
@@ -75,6 +79,12 @@ public class UserService {
       return u.getVerifyExpiredAt();
     }
     return null;
+  }
+
+  public String LoginToken(SignInForm form){
+    User user = findValidUser(form.getEmail(), form.getPassword())
+        .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
+    return jwtTokenProvider.createToken(user.getEmail(), user.getId());
   }
 
 
