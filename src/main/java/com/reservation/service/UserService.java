@@ -81,7 +81,7 @@ public class UserService {
     return null;
   }
 
-  public String LoginToken(SignInForm form){
+  public String loginToken(SignInForm form){
     User user = findValidUser(form.getEmail(), form.getPassword())
         .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
     return jwtTokenProvider.createToken(user.getEmail(), user.getId());

@@ -35,7 +35,7 @@ public class UserController {
   //로그인
   @PostMapping("/signIn")
   public ResponseEntity<String> signIn(@RequestBody SignInForm form){
-    return ResponseEntity.ok(userService.LoginToken(form));
+    return ResponseEntity.ok(userService.loginToken(form));
   }
 
 
