@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class Store {
+public class Restaurant {
     @Id
     @GeneratedValue
     @Column(name = "store_id")
