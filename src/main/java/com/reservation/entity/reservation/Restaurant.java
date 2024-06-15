@@ -17,25 +17,29 @@ import java.util.List;
 public class Restaurant {
     @Id
     @GeneratedValue
-    @Column(name = "store_id")
+//    @Column(name = "res_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+//    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "store_name")
+    //    @Column(name = "res_name")
     private String name;
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "restaurant")
     private List<Reservation> reservationList = new ArrayList<>();
 
-    private String location;
-    private String description;
+    private String address;
+    private String openTime;
+    private String breakTime;
+    private String closeTime;
 
-    private double x;
-    private double y;
+//    private double x;
+//    private double y;
+//
+//    @CreatedDate
+//    private LocalDateTime createdAt;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+//    private LocalDateTime updatedAt;
 }
