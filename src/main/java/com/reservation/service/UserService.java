@@ -4,6 +4,7 @@ import static com.reservation.exception.ErrorCode.ALREADY_REGISTER_USER;
 import static com.reservation.exception.ErrorCode.ALREADY_VERIFY;
 import static com.reservation.exception.ErrorCode.EXPIRE_CODE;
 import static com.reservation.exception.ErrorCode.LOGIN_CHECK_FAIL;
+import static com.reservation.exception.ErrorCode.PASSWORD_NOT_MATCH;
 import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
 import static com.reservation.exception.ErrorCode.WRONG_VERIFICATION;
 
@@ -39,9 +40,9 @@ public class UserService {
 
   @Transactional
   public UserDto userSignUp(SignUpForm form) {
-    if (userRepository.existsByEmail(form.getEmail())){
+    if (userRepository.existsByEmail(form.getEmail())) {
       throw new Exception(ALREADY_REGISTER_USER);
-    }else{
+    } else {
       User u = signUp(form);
 
       String code = getRandomCode();
@@ -51,15 +52,21 @@ public class UserService {
       return UserDto.from(u);
     }
   }
+
   //회원 수정
   @Transactional
-  public void modify(UserModifiedDto dto){
+  public void modify(UserModifiedDto dto) {
     User user = userRepository.findById(dto.getId())
         .orElseThrow(() -> new Exception(USER_NOT_FOUND));
 
     user.modify(dto.getName(), dto.getPassword());
+  }
 
-    }
+  //회원 탈퇴
+  @Transactional
+  public void delete(Long id){
+    userRepository.deleteById(id);
+  }
 
 
   @Transactional
@@ -76,7 +83,7 @@ public class UserService {
     user.verificationSuccess(true);
   }
 
-  public Optional<User> findValidUser(String email, String password){
+  public Optional<User> findValidUser(String email, String password) {
     return userRepository.findByEmail(email).filter(
         user -> user.getPassword().equals(password) && user.isVerify());
   }
@@ -92,7 +99,7 @@ public class UserService {
     return null;
   }
 
-  public String loginToken(SignInForm form){
+  public String loginToken(SignInForm form) {
     User user = findValidUser(form.getEmail(), form.getPassword())
         .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
     return jwtTokenProvider.createToken(user.getEmail(), user.getId());
