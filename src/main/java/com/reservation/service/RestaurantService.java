@@ -16,46 +16,66 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class RestaurantService {
-    @Value("${apikey}")
 
-    public static void main(String[] args) throws IOException {
-        String apiKey;
-        StringBuilder urlBuilder = new StringBuilder("http://openapi.seoul.go.kr:8088");
-        /*URL*/
-        String apikey = null;
-        urlBuilder.append("/" + URLEncoder.encode ("","UTF-8") ); /*인증키
-(sample사용시에는 호출시 제한됩니다.)*/
-        urlBuilder.append("/" + URLEncoder.encode ("json","UTF-8") ); /*요청파일타입
-(xml,xmlf,xls,json) */
-        urlBuilder.append("/" + URLEncoder.encode ("TbVwRestaurants","UTF-8"));
-        /*서비스명 (대소문자 구분 필수입니다.)*/
-        urlBuilder.append("/" + URLEncoder.encode ("1","UTF-8")); /*요청시작위치
-(sample인증키 사용시 5이내 숫자)*/
-        urlBuilder.append("/" + URLEncoder.encode ("20","UTF-8"));
-        /*요청종료위치(sample인증키 사용시 5이상 숫자 선택 안 됨)*/
-// 상위 5개는 필수적으로 순서바꾸지 않고 호출해야 합니다.
-// 서비스별 추가 요청 인자이며 자세한 내용은 각 서비스별'요청인자'부분에 자세히 나와 있습니다.
+    @Value("${API-KEY.restaurantKey}")
+    String restaurantKey;
+    private final RestaurantRepository restaurantRepository;//다이어리 서비스에서 다이어리 레포짓토리를 불러와 보자.
 
-        URL url = new URL(urlBuilder.toString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-type", "application/xml");
-        System.out .println("Response code: " + conn.getResponseCode()); /* 연결
-자체에 대한 확인이 필요하므로 추가합니다.*/
-        BufferedReader rd;
-// 서비스코드가 정상이면 200~300사이의 숫자가 나옵니다.
-        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb.append(line);
-        }
-        rd.close();
-        conn.disconnect();
-        System.out .println(sb.toString());
+    public RestaurantService(RestaurantRepository restaurantRepository) {
+        this.restaurantRepository = restaurantRepository;
     }
+
+    private String getRestaurantString() {
+        String apiUrl = "http://openapi.seoul.go.kr:8088" + restaurantKey;
+
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();//apiUrl을 http 형식으로 연결
+            connection.setRequestMethod("GET");
+            int responseCode = connection.getResponseCode();
+
+            //200okay이런게 정상코드
+            BufferedReader br;
+            if (responseCode == 200) {//200이라면, 제대로 응답
+                br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            } else {
+                br = new BufferedReader(
+                    new InputStreamReader(connection.getErrorStream()));
+            }
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+            }
+            br.close();
+            return response.toString();
+
+        } catch (Exception e) {
+            return "failed to get response";
+        }
+    }
+
+    private Map<String, Object> parseRestaurant(String jsonString){
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject;
+
+        try{
+            jsonObject = (JSONObject) jsonParser.parse(jsonString);
+        }catch(ParseException e){
+            throw new RuntimeException(e);
+        }
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+
+        JSONObject mainData = (JSONObject)jsonObject.get("POST_SJ");
+        JSONArray RestaurantArray = (JSONArray) jsonObject.get("CMMN_USE_TIME");
+        JSONObject RestaurantData = (JSONObject) RestaurantArray.get(0);
+
+        resultMap.put("POST_SJ", RestaurantData.get("POST_SJ"));
+        resultMap.put("CMMN_USE_TIME", RestaurantData.get("CMMN_USE_TIME"));
+
+        return resultMap;
+    }
+
 }
