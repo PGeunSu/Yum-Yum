@@ -68,7 +68,6 @@ public class UserService {
     userRepository.deleteById(id);
   }
 
-
   @Transactional
   public void verifyEmail(String email, String code) {
     User user = userRepository.findByEmail(email)
@@ -87,8 +86,6 @@ public class UserService {
     return userRepository.findByEmail(email).filter(
         user -> user.getPassword().equals(password) && user.isVerify());
   }
-
-  @Transactional
   public LocalDateTime validateEmail(Long customerId, String verificationCode) {
     Optional<User> optionalCustomer = userRepository.findById(customerId);
     if (optionalCustomer.isPresent()) {
