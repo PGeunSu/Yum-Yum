@@ -1,21 +1,11 @@
-package com.reservation.entity.reservation;
+package com.reservation.dto.reservation;
 
-import com.reservation.entity.user.User;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import org.springframework.data.annotation.Id;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
-public class Restaurant {
-
+public class RestaurantList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +15,7 @@ public class Restaurant {
     private String CMMN_TELNO;
     private String CMMN_USE_TIME;
 
-    public void RestaurantList(Long id, String POST_SJ, String ADDRESS,
+    public RestaurantList(Long id, String POST_SJ, String ADDRESS,
         String NEW_ADDRESS, String CMMN_TELNO, String CMMN_USE_TIME) {
         this.id = id;
         this.POST_SJ = POST_SJ;
