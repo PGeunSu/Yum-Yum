@@ -76,4 +76,11 @@ public class User{
         .verify(false)
         .build();
   }
+
+  //회원정보 수정 (이름과, 비밀번호만 수정 가능)
+  public void modify(String name, String password){
+    this.name = name;
+    this.password = password;
+  }
+
 }

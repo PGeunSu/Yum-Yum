@@ -27,8 +27,8 @@ public class Store {
     @Column(name = "store_name")
     private String name;
 
-    @OneToMany(mappedBy = "store")
-    private List<Reservation> reservationList = new ArrayList<>();
+//    @OneToMany(mappedBy = "store")
+//    private List<Reservation> reservationList = new ArrayList<>();
 
     private String location;
     private String description;

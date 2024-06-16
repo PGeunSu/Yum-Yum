@@ -10,6 +10,7 @@ import static com.reservation.exception.ErrorCode.WRONG_VERIFICATION;
 import com.reservation.dto.user.SignInForm;
 import com.reservation.dto.user.SignUpForm;
 import com.reservation.dto.user.UserDto;
+import com.reservation.dto.user.UserModifiedDto;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.jwt.config.JwtTokenProvider;
@@ -50,6 +51,16 @@ public class UserService {
       return UserDto.from(u);
     }
   }
+  //회원 수정
+  @Transactional
+  public void modify(UserModifiedDto dto){
+    User user = userRepository.findById(dto.getId())
+        .orElseThrow(() -> new Exception(USER_NOT_FOUND));
+
+    user.modify(dto.getName(), dto.getPassword());
+
+    }
+
 
   @Transactional
   public void verifyEmail(String email, String code) {
