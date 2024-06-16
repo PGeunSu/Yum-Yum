@@ -1,4 +1,4 @@
-package com.reservation.config;
+package com.reservation.config.webSocket;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

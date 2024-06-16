@@ -1,4 +1,4 @@
-package com.reservation.config;
+package com.reservation.config.webSocket;
 
 import com.reservation.dto.websocket.MyHandler;
 import org.springframework.context.annotation.Bean;

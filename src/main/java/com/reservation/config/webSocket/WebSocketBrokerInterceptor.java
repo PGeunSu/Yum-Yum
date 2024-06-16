@@ -1,4 +1,4 @@
-package com.reservation.config;
+package com.reservation.config.webSocket;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
