@@ -38,6 +38,17 @@ public class UserService {
     return userRepository.save(User.from(form));
   }
 
+  private String getVerificationEmail(String email, String name, String code) {
+    StringBuilder sb = new StringBuilder();
+
+    return sb.append("Hello ").append(name)
+        .append("! Please Click Link for verification. \n")
+        .append("http://localhost:8080/users/verify/?email=")
+        .append(email)
+        .append("&code=")
+        .append(code).toString();
+  }
+
   @Transactional
   public UserDto userSignUp(SignUpForm form) {
     if (userRepository.existsByEmail(form.getEmail())) {
@@ -64,7 +75,7 @@ public class UserService {
 
   //회원 탈퇴
   @Transactional
-  public void delete(Long id){
+  public void delete(Long id) {
     userRepository.deleteById(id);
   }
 
@@ -86,6 +97,7 @@ public class UserService {
     return userRepository.findByEmail(email).filter(
         user -> user.getPassword().equals(password) && user.isVerify());
   }
+
   public LocalDateTime validateEmail(Long customerId, String verificationCode) {
     Optional<User> optionalCustomer = userRepository.findById(customerId);
     if (optionalCustomer.isPresent()) {
