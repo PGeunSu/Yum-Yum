@@ -1,7 +1,11 @@
 package com.reservation.dto.board;
-
-import lombok.Getter;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@AllArgsConstructor
+@Setter
 
 
 @NoArgsConstructor
