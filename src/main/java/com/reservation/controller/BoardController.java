@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController // JSON으로 데이터를 주고받음을 선언(미정)
+@RestController // JSON으로 데이터를 주고받음을 선언합니다.
 public class BoardController {
   private final BoardService boardService;
 
@@ -38,7 +38,7 @@ public class BoardController {
   // 글 수정
   @PutMapping("/boards/{id}")
   public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-    return boardService.updateBoard(id,requestDto);
+    return boardService.update(id,requestDto);
   }
 
   // 글 삭제
@@ -48,9 +48,8 @@ public class BoardController {
   }
 
   // 비밀번호 확인
-//  @GetMapping("/boards/check/{id}/{inputPassword}")
-//  public boolean checkPassword(@PathVariable Long id,@PathVariable String inputPassword) {
-//    return boardService.check(id, inputPassword);
-//  }
+  @GetMapping("/boards/check/{id}/{inputPassword}")
+  public boolean checkPassword(@PathVariable Long id,@PathVariable String inputPassword) {
+    return boardService.checkPassword(id, inputPassword);
+  }
 }
-

@@ -3,6 +3,7 @@ package com.reservation.dto.board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @NoArgsConstructor
 @Getter
 public class BoardRequestDto {

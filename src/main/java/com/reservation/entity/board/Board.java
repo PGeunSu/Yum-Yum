@@ -10,10 +10,10 @@ import jakarta.persistence.*;
 @Setter
 @Getter // get 함수를 일괄적으로 생성
 @NoArgsConstructor // 기본 생성자를 생성
-@Entity(name = "users") // DB 테이블 역할
+@Entity // DB 테이블 역할
 public class Board extends Timestamped {
   // 글 고유 아이디
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   private Long id;
 
