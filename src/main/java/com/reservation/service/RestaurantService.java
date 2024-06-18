@@ -2,19 +2,13 @@ package com.reservation.service;
 
 import com.reservation.repository.RestaurantRepository;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RestaurantService {
 
     @Value("${API-KEY.restaurantKey}")
@@ -25,6 +19,11 @@ public class RestaurantService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    public void createRestaurant(String POST_SJ, String CMMN_USE_TIME) {
+        System.out.println(getRestaurantString());
+    }
+
+    //Api호출부분
     private String getRestaurantString() {
         String apiUrl = "http://openapi.seoul.go.kr:8088" + restaurantKey;
 
@@ -55,27 +54,27 @@ public class RestaurantService {
         }
     }
 
-    private Map<String, Object> parseRestaurant(String jsonString){
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject;
-
-        try{
-            jsonObject = (JSONObject) jsonParser.parse(jsonString);
-        }catch(ParseException e){
-            throw new RuntimeException(e);
-        }
-
-        Map<String, Object> resultMap = new HashMap<>();
-
-
-        JSONObject mainData = (JSONObject)jsonObject.get("POST_SJ");
-        JSONArray RestaurantArray = (JSONArray) jsonObject.get("CMMN_USE_TIME");
-        JSONObject RestaurantData = (JSONObject) RestaurantArray.get(0);
-
-        resultMap.put("POST_SJ", RestaurantData.get("POST_SJ"));
-        resultMap.put("CMMN_USE_TIME", RestaurantData.get("CMMN_USE_TIME"));
-
-        return resultMap;
-    }
+//    private Map<String, Object> parseRestaurant(String jsonString){
+//        JSONParser jsonParser = new JSONParser();
+//        JSONObject jsonObject;
+//
+//        try{
+//            jsonObject = (JSONObject) jsonParser.parse(jsonString);
+//        }catch(ParseException e){
+//            throw new RuntimeException(e);
+//        }
+//
+//        Map<String, Object> resultMap = new HashMap<>();
+//
+//        JSONObject mainData = (JSONObject)jsonObject.get("POST_SJ");
+//        resultMap.put("temp", mainData.get("temp"));
+//        JSONArray RestaurantArray = (JSONArray) jsonObject.get("CMMN_USE_TIME");
+//        JSONObject RestaurantData = (JSONObject) RestaurantArray.get(0);
+//
+//        resultMap.put("POST_SJ", RestaurantData.get("POST_SJ"));
+//        resultMap.put("CMMN_USE_TIME", RestaurantData.get("CMMN_USE_TIME"));
+//
+//        return resultMap;
+//    }
 
 }
