@@ -20,8 +20,11 @@ public enum ErrorCode {
 
   //reservation
   ALREADY_EXIST_STORE(HttpStatus.BAD_REQUEST,"이미 존재하는 매장 이름입니다."),
-  STORE_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 매장입니다.");
+  STORE_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 매장입니다."),
+  RESERVATION_ZERO(HttpStatus.BAD_REQUEST, "예약 내역이 없습니다."),
+  RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "예약 정보를 찾을 수 없습니다."),
 
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
 
 
   private final HttpStatus httpStatus;
