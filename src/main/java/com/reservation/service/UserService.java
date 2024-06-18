@@ -15,6 +15,7 @@ import com.reservation.dto.user.UserModifiedDto;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.jwt.config.JwtTokenProvider;
+import com.reservation.mailgun.SendMailForm;
 import com.reservation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -55,9 +56,13 @@ public class UserService {
       throw new Exception(ALREADY_REGISTER_USER);
     } else {
       User u = signUp(form);
-
       String code = getRandomCode();
-
+      SendMailForm mailForm = SendMailForm.builder()
+          .from("yum-yum@email.com")
+          .to(form.getEmail())
+          .subject("Verification Email")
+          .text(getVerificationEmail(form.getEmail(), form.getName(), code))
+          .build();
       validateEmail(u.getId(), code);
 
       return UserDto.from(u);
