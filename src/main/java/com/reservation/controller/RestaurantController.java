@@ -43,7 +43,7 @@ public class RestaurantController {
     @PostMapping("/api")
     public String restaurant_save(String date, Model model){
         String result = "";
-        String apiUrl = "http://openapi.seoul.go.kr:8088" + restaurantKey;
+        String apiUrl = "http://openapi.seoul.go.kr:8088/" + restaurantKey + "/json/TbVwRestaurants/1/5/";
         try {
             URL url = new URL(apiUrl);
             BufferedReader bf;
