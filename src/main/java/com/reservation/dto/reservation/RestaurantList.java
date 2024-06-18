@@ -1,13 +1,11 @@
 package com.reservation.dto.reservation;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import lombok.Builder;
+import lombok.Data;
 
-
+@Data
+@Builder
 public class RestaurantList {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String POST_SJ;
     private String ADDRESS;
