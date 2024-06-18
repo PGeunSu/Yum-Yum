@@ -24,14 +24,28 @@ public class BoardListResponseDto {
 
   // Entity -> dto
   public BoardListResponseDto(Board board) {
+
     this.title = board.getTitle();
+
     this.createdAt = board.getModifiedAt();
     this.modifiedAt = board.getCreatedAt();
   }
 
   public BoardListResponseDto(Optional<Board> board) {
+    if (board.isPresent()){
     this.title = board.get().getTitle();
+
     this.createdAt = board.get().getModifiedAt();
     this.modifiedAt = board.get().getCreatedAt();
-  }
+  } else{
+      // Optional이 비어있는 경우 처리 (필요에 따라 추가)
+      this.title = null;
+
+      this.createdAt = null;
+      this.modifiedAt = null;
+
+    }
+
 }
+}
+
