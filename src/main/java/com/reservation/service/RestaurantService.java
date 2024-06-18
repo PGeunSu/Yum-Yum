@@ -5,19 +5,19 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantService {
 
     @Value("${API-KEY.restaurantKey}")
     String restaurantKey;
-    private final RestaurantRepository restaurantRepository;//다이어리 서비스에서 다이어리 레포짓토리를 불러와 보자.
+    private final RestaurantRepository restaurantRepository;
 
-    public RestaurantService(RestaurantRepository restaurantRepository) {
-        this.restaurantRepository = restaurantRepository;
-    }
+
 
     public void createRestaurant(String POST_SJ, String CMMN_USE_TIME) {
         System.out.println(getRestaurantString());

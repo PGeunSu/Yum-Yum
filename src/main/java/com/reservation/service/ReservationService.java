@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
         private Reservation makeReservationEntity(Request request){
             User user = userRepository.findByEmail(request.getUserId())//id 관련부분 구현필요.
                 .orElseThrow(() -> new ReservationException(ErrorCode.USER_NOT_FOUND));
-            Restaurant store = restaurantRepository.findByRestaurant(request.getRestaurant())
+            Restaurant store = restaurantRepository.findByPost(request.getRestaurant())
                 .orElseThrow(() -> new ReservationException(ErrorCode.STORE_NOT_FOUND));
             LocalDateTime reservationTime = LocalDateTime.of(request.getDate(), request.getTime());
 
@@ -49,7 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
                 .name(user.getName())
                 .id(user.getId())
 
-                .place(store.getPOST_SJ())
+                .place(store.getPost())
 
                 .reservationStatus(ReservationStatus.REQUESTING)
                 .createdAt(LocalDateTime.now())

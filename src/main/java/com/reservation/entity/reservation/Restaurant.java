@@ -21,19 +21,19 @@ public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String POST_SJ;
-    private String ADDRESS;
-    private String NEW_ADDRESS;
-    private String CMMN_TELNO;
-    private String CMMN_USE_TIME;
+    private String post;
+    private String address;
+    private String newadress;
+    private String tell;
+    private String time;
 
-    public void RestaurantList(Long id, String POST_SJ, String ADDRESS,
-        String NEW_ADDRESS, String CMMN_TELNO, String CMMN_USE_TIME) {
+    public void RestaurantList(Long id, String post, String address,
+        String newadress, String tell, String time) {
         this.id = id;
-        this.POST_SJ = POST_SJ;
-        this.ADDRESS = ADDRESS;
-        this.NEW_ADDRESS = NEW_ADDRESS;
-        this.CMMN_TELNO = CMMN_TELNO;
-        this.CMMN_USE_TIME = CMMN_USE_TIME;
+        this.post = post;
+        this.address = address;
+        this.newadress = newadress;
+        this.tell = tell;
+        this.time = time;
     }
 }
