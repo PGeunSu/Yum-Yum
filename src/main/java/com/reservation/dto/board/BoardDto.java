@@ -1,7 +1,7 @@
 package com.reservation.dto.board;
 
 import com.reservation.entity.board.Board;
-import com.reservation.entity.UploadImage;
+import com.reservation.entity.board.UploadImage;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

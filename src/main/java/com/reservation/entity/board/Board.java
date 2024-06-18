@@ -1,6 +1,6 @@
 package com.reservation.entity.board;
 
-import com.reservation.BaseEntity;
+import com.reservation.enum_class.BaseEntity;
 import com.reservation.dto.board.BoardDto;
 import com.reservation.enum_class.BoardCategory;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity

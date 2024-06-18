@@ -1,7 +1,7 @@
 package com.reservation.dto.board;
 
 import com.reservation.entity.board.Board;
-import com.reservation.entity.Comment;
+import com.reservation.entity.board.Comment;
  import com.reservation.entity.User;  // 유저연동
 import lombok.Data;
 
