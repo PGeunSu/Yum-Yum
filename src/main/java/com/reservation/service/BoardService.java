@@ -1,8 +1,5 @@
 package com.reservation.service;
 
-import com.reservation.dto.board.BoardRequestDto;
-import com.reservation.dto.board.BoardListResponseDto;
-import com.reservation.dto.board.BoardResponseDto;
 import com.reservation.entity.board.Board;
 import com.reservation.repository.BoardRepository;
 import lombok.AllArgsConstructor;

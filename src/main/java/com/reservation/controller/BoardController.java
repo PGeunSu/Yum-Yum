@@ -1,8 +1,5 @@
 package com.reservation.controller;
 
-import com.reservation.dto.board.BoardListResponseDto;
-import com.reservation.dto.board.BoardRequestDto;
-import com.reservation.dto.board.BoardResponseDto;
 import com.reservation.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
