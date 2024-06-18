@@ -25,7 +25,7 @@ public class RestaurantService {
 
     //Api호출부분
     private String getRestaurantString() {
-        String apiUrl = "http://openapi.seoul.go.kr:8088" + restaurantKey;
+        String apiUrl = "http://openapi.seoul.go.kr:8088/" + restaurantKey + "/TbVwRestaurants/1/5/";
 
         try {
             URL url = new URL(apiUrl);
