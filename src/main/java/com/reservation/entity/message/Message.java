@@ -11,14 +11,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.parameters.P;
 
 @Getter
 @Entity
@@ -34,8 +32,8 @@ public class Message {
   private String title;
   private String content;
 
-  private boolean deleteBySender;
-  private boolean deleteByReceiver;
+  private boolean deletedBySender;
+  private boolean deletedByReceiver;
 
   @ManyToOne(fetch =  FetchType.LAZY)
   @JoinColumn(name = "sender_id")
@@ -50,16 +48,29 @@ public class Message {
   @CreatedDate
   private LocalDateTime createdAt;
 
+  public Message(final String title, final String content, final User sender, final User receiver) {
+    this.title = title;
+    this.content = content;
+    this.sender = sender;
+    this.receiver = receiver;
+    this.deletedBySender = this.deletedByReceiver = false;
+  }
+
+  public boolean isSender(User user){
+    return this.getSender().equals(user);
+  }
+
+
   public void deleteBySender(){
-    this.deleteBySender = true;
+    this.deletedBySender = true;
   }
 
   public void deleteByReceiver(){
-    this.deleteByReceiver = true;
+    this.deletedByReceiver = true;
   }
 
-  public boolean isDeleted(){
-    return isDeleteBySender() && isDeleteByReceiver();
+  public boolean isDeletedMessage(){
+    return isDeletedBySender() && isDeletedByReceiver();
   }
 
 

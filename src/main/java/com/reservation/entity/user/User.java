@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,6 +82,10 @@ public class User{
   public void modify(String name, String password){
     this.name = name;
     this.password = password;
+  }
+  //Id 일치 여부
+  public boolean isSameUserId(Long id) {
+    return Objects.equals(this.id, id);
   }
 
 }

@@ -14,6 +14,9 @@ public enum ErrorCode {
   LOGIN_CHECK_FAIL(HttpStatus.BAD_REQUEST, "아이디와 패스워드를 확인해 주세요."),
   PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
+  //Message
+  MESSAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 쪽지입니다."),
+
   //Verify
   ALREADY_VERIFY(HttpStatus.BAD_REQUEST, "이미 인증이 완료되었습니다."),
   WRONG_VERIFICATION(HttpStatus.BAD_REQUEST, "잘못된 인증 시도입니다."),

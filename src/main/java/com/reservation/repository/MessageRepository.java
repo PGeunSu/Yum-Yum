@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-  List<Message> findAllByReceiver(User user);
+  List<Message> findAllByReceiverAndDeletedByReceiverFalseOrderByIdDesc(User user);
 
-  List<Message> findAllBySender(User user);
-
+  List<Message> findAllBySenderAndDeletedBySenderFalseOrderByIdDesc(User user);
 }
