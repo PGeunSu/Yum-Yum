@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
+    @Slf4j
     @RequiredArgsConstructor
     @Transactional
     @Service
@@ -41,16 +41,15 @@ import org.springframework.transaction.annotation.Transactional;
         private Reservation makeReservationEntity(Request request){
             User user = userRepository.findByEmail(request.getUserId())//id 관련부분 구현필요.
                 .orElseThrow(() -> new ReservationException(ErrorCode.USER_NOT_FOUND));
-            Restaurant store = restaurantRepository.findByPost(request.getRestaurant())
+            // 매장 예약이 진행되는 부분
+            Restaurant restaurant = restaurantRepository.findByPost(request.getRestaurant())
                 .orElseThrow(() -> new ReservationException(ErrorCode.STORE_NOT_FOUND));
             LocalDateTime reservationTime = LocalDateTime.of(request.getDate(), request.getTime());
 
             return Reservation.builder()
                 .name(user.getName())
                 .id(user.getId())
-
-                .place(store.getPost())
-
+                .place(restaurant.getPost())
                 .reservationStatus(ReservationStatus.REQUESTING)
                 .createdAt(LocalDateTime.now())
                 .time(reservationTime)
