@@ -1,5 +1,6 @@
 package com.reservation.dto.reservation;
 
+import com.reservation.entity.reservation.Restaurant;
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,4 +24,13 @@ public class RestaurantList {
         this.tell = tell;
         this.time = time;
     }
+
+    public static RestaurantList fromEntity(Restaurant restaurant){
+        return RestaurantList.builder()
+            .post(restaurant.getPost())
+            .address(restaurant.getAddress())
+            .newAdress(restaurant.getNewAdress())
+            .build();
+    }
+
 }
