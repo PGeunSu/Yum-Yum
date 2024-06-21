@@ -1,6 +1,7 @@
 package com.reservation.jwt.config;
 
 import com.reservation.jwt.dto.JwtDto;
+import com.reservation.jwt.dto.UserVo;
 import com.reservation.jwt.filter.Aes256Util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,6 +15,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -89,9 +91,14 @@ public class JwtTokenProvider {
     return new UsernamePasswordAuthenticationToken(principal, "", authorities);
   }
 
-  //토큰에서 사용자 ID 추출
-  public Long getId(String token) {
-    return Long.parseLong(parseClaims(token).getId());
+  //토큰에서 사용자 정보 추출
+  public UserVo getUserVo(String token) {
+    Claims c = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+
+    return new UserVo(
+        Long.valueOf(Objects.requireNonNull(Aes256Util.decrypt(c.getId()))),
+        Aes256Util.decrypt(c.getSubject()),
+        Aes256Util.decrypt(c.getAudience()));
   }
 
   private Claims parseClaims(String accessToken) {

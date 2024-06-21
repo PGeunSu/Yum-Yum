@@ -1,5 +1,6 @@
 package com.reservation.controller;
 
+import com.reservation.config.JwtAuth;
 import com.reservation.dto.message.MessageCreateDto;
 import com.reservation.entity.user.User;
 import com.reservation.service.MessageService;
@@ -22,7 +23,7 @@ public class MessageController {
 
   //쪽지 보내기
   @PostMapping()
-  public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, User sender){
+  public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, @JwtAuth User sender){
     return ResponseEntity.ok(messageService.createMessage(sender, req));
   }
   //받은 쪽지 전부 확인
