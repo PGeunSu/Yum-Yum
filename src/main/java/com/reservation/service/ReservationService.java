@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
             // 매장 예약이 진행되는 부분
             Restaurant restaurant = restaurantRepository.findByPost(request.getRestaurant())
                 .orElseThrow(() -> new ReservationException(ErrorCode.STORE_NOT_FOUND));
-            LocalDateTime reservationTime = LocalDateTime.of(request.getDate(), request.getTime());
+//            LocalDateTime reservationTime = LocalDateTime.of(request.getDate(), request.getTime());
 
             return Reservation.builder()
                 .name(user.getName())
@@ -52,7 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
                 .place(restaurant.getPost())
                 .reservationStatus(ReservationStatus.REQUESTING)
                 .createdAt(LocalDateTime.now())
-                .time(reservationTime)
+//                .time(reservationTime)
                 .build();
         }
 

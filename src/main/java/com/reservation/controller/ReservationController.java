@@ -33,7 +33,7 @@ public class ReservationController {
     @PostMapping("/request")
     public ResponseEntity<?> reservation(@RequestBody MakeReservation.Request request,
         @AuthenticationPrincipal User user) {
-        request.setUserId(String.valueOf(user.getId()));
+        request.setRestaurant(String.valueOf(user.getId()));
         ReservationDto reservationDto = reservationService.makeReservation(request);
 
         return ResponseEntity.ok(MakeReservation.Response.fromDto(reservationDto));

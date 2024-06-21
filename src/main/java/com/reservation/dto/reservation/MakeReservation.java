@@ -1,17 +1,14 @@
 package com.reservation.dto.reservation;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.reservation.type.ReservationStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
 public class MakeReservation {
@@ -25,10 +22,10 @@ public class MakeReservation {
         private String userId;
         private String restaurant;
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        private LocalDate date;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-        private LocalTime time;
+//        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+//        private LocalDate date;
+//        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+//        private LocalTime time;
     }
 
     @Data
