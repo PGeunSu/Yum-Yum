@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -22,6 +23,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @EntityListeners(value = AuditingEntityListener.class)
 public class Message {
 
@@ -48,7 +50,7 @@ public class Message {
   @CreatedDate
   private LocalDateTime createdAt;
 
-  public Message(final String title, final String content, final User sender, final User receiver) {
+  public Message(String title, String content, User sender, User receiver) {
     this.title = title;
     this.content = content;
     this.sender = sender;

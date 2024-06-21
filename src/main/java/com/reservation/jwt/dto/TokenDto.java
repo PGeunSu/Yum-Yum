@@ -1,15 +1,17 @@
 package com.reservation.jwt.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
-public class UserVo {
+@Builder
+public class TokenDto {
 
-  private Long id;
-  private String name;
   private String email;
-  private String userType;
+  private String name;
 
 }

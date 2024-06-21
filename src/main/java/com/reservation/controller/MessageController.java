@@ -3,14 +3,18 @@ package com.reservation.controller;
 import com.reservation.config.JwtAuth;
 import com.reservation.dto.message.MessageCreateDto;
 import com.reservation.entity.user.User;
+import com.reservation.jwt.config.JwtTokenProvider;
+import com.reservation.jwt.dto.UserVo;
 import com.reservation.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +27,7 @@ public class MessageController {
 
   //쪽지 보내기
   @PostMapping()
-  public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, @JwtAuth User sender){
+  public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, @AuthenticationPrincipal User sender){
     return ResponseEntity.ok(messageService.createMessage(sender, req));
   }
   //받은 쪽지 전부 확인

@@ -15,13 +15,17 @@ import com.reservation.dto.user.UserModifiedDto;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.jwt.config.JwtTokenProvider;
+import com.reservation.jwt.filter.Aes256Util;
 import com.reservation.mailgun.SendMailForm;
 import com.reservation.repository.UserRepository;
+import com.reservation.type.UserType;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -116,7 +120,7 @@ public class UserService {
   public String loginToken(SignInForm form) {
     User user = findValidUser(form.getEmail(), form.getPassword())
         .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
-    return jwtTokenProvider.createToken(user.getEmail(), user.getId());
+    return jwtTokenProvider.createToken(user.getName(), user.getId(), UserType.USER, form.getEmail());
   }
 
 

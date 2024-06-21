@@ -1,9 +1,9 @@
 package com.reservation.entity.user;
 
-import static com.reservation.type.Authority.ROLE_USER;
+import static com.reservation.type.UserType.USER;
 
 import com.reservation.dto.user.SignUpForm;
-import com.reservation.type.Authority;
+import com.reservation.type.UserType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -35,7 +36,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Builder
 @EntityListeners(value = AuditingEntityListener.class)
-public class User{
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +48,7 @@ public class User{
   private String name;
 
   @Enumerated(EnumType.STRING)
-  private Authority role; //회원 상태
+  private UserType role; //회원 상태
 
   //인증
   private boolean verify;
@@ -73,7 +74,7 @@ public class User{
         .email(form.getEmail())
         .name(form.getName())
         .password(form.getPassword())
-        .role(ROLE_USER)
+        .role(USER)
         .verify(false)
         .build();
   }
@@ -88,4 +89,35 @@ public class User{
     return Objects.equals(this.id, id);
   }
 
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    List<GrantedAuthority> roles = new ArrayList<>();
+    roles.add(new SimpleGrantedAuthority(this.role.toString()));
+    return roles;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.name;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }
