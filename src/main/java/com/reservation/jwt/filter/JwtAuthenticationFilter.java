@@ -18,7 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   public static final String TOKEN_HEADER = "Authorization";
@@ -34,11 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String token = resolveToken(request);
 
     //유효성 검사
-//    if (StringUtils.hasText(token) && provider.validateToken(token) && provider.getUserVo(token)
-//        .getUserType().equals("USER"))
-
-      if (StringUtils.hasText(token) && provider.validateToken(token)){
-      //유효할 경우 객체를 가지고와서 SecurityContext 에 저장
+    if (StringUtils.hasText(token) && provider.validateToken(token) && provider.getUserVo(token)
+        .getUserType().equals("USER")) {
       Authentication authentication = provider.getAuthentication(token);
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
@@ -48,12 +44,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private String resolveToken(HttpServletRequest request){
     String token = request.getHeader(TOKEN_HEADER);
 
-    System.out.println(token);
-
     if (!ObjectUtils.isEmpty(token) && token.startsWith(TOKEN_PREFIX)) {
       return token.substring(TOKEN_PREFIX.length());
     }
-
     return null;
   }
 }

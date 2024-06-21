@@ -12,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoder;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,12 @@ public class JwtTokenProvider {
   @Value("${spring.jwt.secret}")
   private String key;
 
-  private long tokenValidTime = 1000L * 60 * 60 * 24;
+  private final long tokenValidTime = 1000L * 60 * 60 * 24;
+
+  public SecretKey getSigningKey(){
+    byte[] keyBytes = Decoders.BASE64URL.decode(this.key);
+    return Keys.hmacShaKeyFor(keyBytes);
+  }
 
   public String createToken(String name, Long id, UserType userType, String email) {
     Claims claims = Jwts.claims()
@@ -56,14 +63,16 @@ public class JwtTokenProvider {
         .setClaims(claims)
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + tokenValidTime))
-        .signWith(SignatureAlgorithm.HS256, key)
+        .signWith(this.getSigningKey())
         .compact();
   }
 
   //토큰 정보 검증
   public boolean validateToken(String token) {
     try {
-      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+      Jws<Claims> claimsJws = Jwts.parserBuilder()
+          .setSigningKey(key)
+          .build().parseClaimsJws(token);
       return !claimsJws.getBody().getExpiration().before(new Date());
     } catch (Exception e) {
       return false;
@@ -72,7 +81,9 @@ public class JwtTokenProvider {
 
   //토큰에서 사용자 정보 추출
   public UserVo getUserVo(String token) {
-    Claims c = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+    Claims c = Jwts.parserBuilder()
+        .setSigningKey(key)
+        .build().parseClaimsJws(token).getBody();
 
     return new UserVo(
         Long.valueOf(Objects.requireNonNull(Aes256Util.decrypt(c.getId()))),
@@ -85,8 +96,9 @@ public class JwtTokenProvider {
 
   private Claims parseClaims(String accessToken) {
     try {
-      return Jwts.parser()
+      return Jwts.parserBuilder()
           .setSigningKey(key)
+          .build()
           .parseClaimsJws(accessToken).getBody();
     } catch (ExpiredJwtException e) {
       return e.getClaims();
