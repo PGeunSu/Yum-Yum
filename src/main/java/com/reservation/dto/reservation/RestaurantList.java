@@ -27,6 +27,7 @@ public class RestaurantList {
 
     public static RestaurantList fromEntity(Restaurant restaurant){
         return RestaurantList.builder()
+            .id(restaurant.getId())
             .post(restaurant.getPost())
             .address(restaurant.getAddress())
             .newAdress(restaurant.getNewAdress())
@@ -34,3 +35,4 @@ public class RestaurantList {
     }
 
 }
+//생성자는 지워도됨.

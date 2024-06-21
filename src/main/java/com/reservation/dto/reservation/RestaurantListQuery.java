@@ -1,7 +1,6 @@
 package com.reservation.dto.reservation;
 
 
-import com.reservation.type.RestaurantSortType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +10,10 @@ import lombok.NoArgsConstructor;
     @NoArgsConstructor
     public class RestaurantListQuery {
         private String post;
-        private RestaurantSortType restaurantSortType;
-
-        private double lat;
-        private double lnt;
+//        private RestaurantSortType restaurantSortType;
+//
+//        private double lat;
+//        private double lnt;
 
         public Object getSortType() {
             return null;
