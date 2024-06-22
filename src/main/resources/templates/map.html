@@ -1,0 +1,174 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>다음 지도 API</title>
+</head>
+<body>
+<div id="map" style="width:750px;height:350px;"></div>
+
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey="></script>
+<script>
+  //api키 보안필요
+  var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+      mapOption = {
+        center: new kakao.maps.LatLng(37.56682, 126.97865), // 지도의 중심좌표
+        level: 3, // 지도의 확대 레벨
+        mapTypeId : kakao.maps.MapTypeId.ROADMAP // 지도종류
+      };
+
+  // 지도를 생성한다
+  var map = new kakao.maps.Map(mapContainer, mapOption);
+
+  // 마커를 표시할 위치와 title 객체 배열입니다
+  var positions = [
+    {
+      title: '컨퍼런스하우스달개비',
+      latlng: new kakao.maps.LatLng(37.566745, 126.976246)
+    },
+    {
+      title: '부민옥',
+      latlng: new kakao.maps.LatLng(37.567500, 126.980273)
+    },
+    {
+      title: '손가명가',
+      latlng: new kakao.maps.LatLng(37.568073, 126.980156)
+    },
+    {
+      title: '정동국밥',
+      latlng: new kakao.maps.LatLng(37.566812, 126.975707)
+    },
+    {
+      title: '유림면',
+      latlng: new kakao.maps.LatLng(37.564269, 126.976102)
+    },
+      //5
+    {
+      title: '덕수정',
+      latlng: new kakao.maps.LatLng(37.565885, 126.972584)
+    },
+    {
+      title: '북창갈비',
+      latlng: new kakao.maps.LatLng(37.562921, 126.977741)
+    },
+    {
+      title: '푸르파파',
+      latlng: new kakao.maps.LatLng(37.562936, 126.977076)
+    },
+    {
+      title: '브론즈레인',
+      latlng: new kakao.maps.LatLng(37.565655, 126.965838)
+    },
+    {
+      title: '스시쿠니',
+      latlng: new kakao.maps.LatLng(37.567666, 126.965730)
+    },
+      //10
+    {
+      title: '마포곱창',
+      latlng: new kakao.maps.LatLng(37.558118, 126.972780)
+    },
+    {
+      title: '참맛집',
+      latlng: new kakao.maps.LatLng(37.561191, 126.962387)
+    },
+    {
+      title: '명문칼국수',
+      latlng: new kakao.maps.LatLng(37.561663, 126.961668)
+    },
+    {
+      title: '명동집',
+      latlng: new kakao.maps.LatLng(37.558901, 126.974643)
+    },
+    {
+      title: '진미식당',
+      latlng: new kakao.maps.LatLng(37.550570, 126.955772)
+    },
+      //15
+    {
+      title: '이요이요스시',
+      latlng: new kakao.maps.LatLng(37.550084, 126.952854)
+    },
+    {
+      title: '용까스',
+      latlng: new kakao.maps.LatLng(37.540993, 126.949392)
+    },
+    {
+      title: '손맛집온밥',
+      latlng: new kakao.maps.LatLng(37.540548, 126.968131)
+    },
+    {
+      title: '데칼코마니',
+      latlng: new kakao.maps.LatLng(37.545233, 126.984921)
+    },
+    {
+      title: '베제투스',
+      latlng: new kakao.maps.LatLng(37.543685, 126.987259)
+    },
+      //20
+    {
+      title: '남산골',
+      latlng: new kakao.maps.LatLng(37.560761, 126.998774)
+    },
+    {
+      title: '산타돈부리',
+      latlng: new kakao.maps.LatLng(37.560498, 126.997506)
+    },
+    {
+      title: '짬뽕야',
+      latlng: new kakao.maps.LatLng(37.561018, 126.997314)
+    },
+    {
+      title: '골목식당',
+      latlng: new kakao.maps.LatLng(37.565033, 126.990284)
+    },
+    {
+      title: '계동옥',
+      latlng: new kakao.maps.LatLng(37.579375, 126.986615)
+    },
+      //25
+    {
+      title: '안암',
+      latlng: new kakao.maps.LatLng(37.579406, 126.984463)
+    },
+    {
+      title: '공기식당',
+      latlng: new kakao.maps.LatLng(37.580331, 126.969529)
+    },
+    {
+      title: '덕이나루',
+      latlng: new kakao.maps.LatLng(37.580014, 126.968864)
+    },
+    {
+      title: '서촌과자집',
+      latlng: new kakao.maps.LatLng(37.579856, 126.969188)
+    },
+    {
+      title: '아주로',
+      latlng: new kakao.maps.LatLng(37.580234, 126.969115)
+    },
+      //30
+
+  ];
+
+  // 마커 이미지의 이미지 주소입니다
+  var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+
+  for (var i = 0; i < positions.length; i ++) {
+
+    // 마커 이미지의 이미지 크기 입니다
+    var imageSize = new kakao.maps.Size(24, 35);
+
+    // 마커 이미지를 생성합니다
+    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+      map: map, // 마커를 표시할 지도
+      position: positions[i].latlng, // 마커를 표시할 위치
+      title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+      image : markerImage // 마커 이미지
+    });
+  }
+</script>
+</body>
+</html>
