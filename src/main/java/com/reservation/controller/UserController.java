@@ -5,6 +5,7 @@ import com.reservation.dto.user.SignUpForm;
 import com.reservation.dto.user.UserDto;
 import com.reservation.dto.user.UserModifiedDto;
 import com.reservation.entity.user.User;
+import com.reservation.jwt.dto.TokenDto;
 import com.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,11 @@ public class UserController {
   @PostMapping("/signUp")
   public ResponseEntity<UserDto> signUp(@RequestBody SignUpForm form){
     return ResponseEntity.ok(userService.userSignUp(form));
+  }
+
+  @GetMapping("/Test")
+  public Long test(@AuthenticationPrincipal TokenDto dto){
+    return dto.getId();
   }
 
   //회원가입 인증

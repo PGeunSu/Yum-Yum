@@ -120,7 +120,7 @@ public class UserService {
   public String loginToken(SignInForm form) {
     User user = findValidUser(form.getEmail(), form.getPassword())
         .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
-    return jwtTokenProvider.createToken(user.getName(), user.getId(), UserType.USER, form.getEmail());
+    return jwtTokenProvider.createToken(user);
   }
 
 

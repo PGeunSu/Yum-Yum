@@ -1,9 +1,9 @@
 package com.reservation.controller;
 
-import com.reservation.config.JwtAuth;
 import com.reservation.dto.message.MessageCreateDto;
 import com.reservation.entity.user.User;
 import com.reservation.jwt.config.JwtTokenProvider;
+import com.reservation.jwt.dto.TokenDto;
 import com.reservation.jwt.dto.UserVo;
 import com.reservation.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +27,14 @@ public class MessageController {
 
   //쪽지 보내기
   @PostMapping()
-  public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, @AuthenticationPrincipal User sender){
+  public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, @AuthenticationPrincipal TokenDto sender){
     return ResponseEntity.ok(messageService.createMessage(sender, req));
   }
+
+
   //받은 쪽지 전부 확인
   @GetMapping("/receiver")
-  public ResponseEntity<?> receiveMessageList(User user){
+  public ResponseEntity<?> receiveMessageList( User user){
     return ResponseEntity.ok(messageService.receiveMessageList(user));
   }
 

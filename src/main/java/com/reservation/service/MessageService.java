@@ -8,6 +8,7 @@ import com.reservation.dto.message.MessageDto;
 import com.reservation.entity.message.Message;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
+import com.reservation.jwt.dto.TokenDto;
 import com.reservation.repository.MessageRepository;
 import com.reservation.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -29,16 +30,25 @@ public class MessageService {
       return userRepository.findByName(req.getReceiverName())
           .orElseThrow(() -> new Exception(USER_NOT_FOUND));
   }
-
-  private Message getMessage(User sender, User receiver, MessageCreateDto req){
-    return new Message(req.getTitle(), req.getContent(), sender, receiver);
+  private User getSender(TokenDto sender){
+    return userRepository.findById(sender.getId())
+        .orElseThrow(() -> new Exception(USER_NOT_FOUND));
   }
 
   //쪽지 생성
   @Transactional
-  public MessageDto createMessage(User sender, MessageCreateDto req){
+  public MessageDto createMessage(TokenDto sender, MessageCreateDto req){
+    User user = getSender(sender);
     User receiver = getReceiver(req);
-    Message message = getMessage(sender, receiver, req);
+
+    Message message = messageRepository.save(
+        Message.builder()
+            .title(req.getTitle())
+            .content(req.getContent())
+            .sender(user)
+            .receiver(receiver)
+            .build()
+    );
 
     return MessageDto.toDto(messageRepository.save(message));
   }

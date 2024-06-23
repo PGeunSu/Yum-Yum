@@ -50,18 +50,9 @@ public class Message {
   @CreatedDate
   private LocalDateTime createdAt;
 
-  public Message(String title, String content, User sender, User receiver) {
-    this.title = title;
-    this.content = content;
-    this.sender = sender;
-    this.receiver = receiver;
-    this.deletedBySender = this.deletedByReceiver = false;
-  }
-
   public boolean isSender(User user){
     return this.getSender().equals(user);
   }
-
 
   public void deleteBySender(){
     this.deletedBySender = true;
