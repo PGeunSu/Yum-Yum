@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,13 +56,15 @@ public class MessageService {
 
   //수신 메세지 목록
   @Transactional
-  public List<MessageDto> receiveMessageList(User user){
+  public List<MessageDto> receiveMessageList(TokenDto user){
     return messageRepository.findAllByReceiverAndDeletedByReceiverFalseOrderByIdDesc(user)
         .stream().map(MessageDto::toDto)
         .collect(Collectors.toList());
   }
+
+  //해당 id 메세지 하나만
   @Transactional
-  public MessageDto receiveMessage(Long id, User receiver){
+  public MessageDto receiveMessage(Long id, TokenDto receiver){
     Message message = messageRepository.findById(id)
         .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
     validateReceiverMessage(receiver, message);
@@ -70,7 +73,7 @@ public class MessageService {
   }
 
   //수신 메세지 유효성 검사
-  private void validateReceiverMessage(User user, Message message){
+  private void validateReceiverMessage(TokenDto user, Message message){
     if (!message.getReceiver().isSameUserId(user.getId())){
       throw new Exception(USER_NOT_FOUND);
     }
@@ -81,14 +84,15 @@ public class MessageService {
 
   //송신 메세지 목록
   @Transactional
-  public List<MessageDto> sendMessageList(User user){
+  public List<MessageDto> sendMessageList(TokenDto user){
     return messageRepository.findAllBySenderAndDeletedBySenderFalseOrderByIdDesc(user)
         .stream().map(MessageDto::toDto)
         .collect(Collectors.toList());
   }
-
+  
+  //해당 id 메세지 하나만
   @Transactional
-  public MessageDto sendMessage(Long id, User sender){
+  public MessageDto sendMessage(Long id, TokenDto sender){
     Message message = messageRepository.findById(id)
         .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
     validateSendMessage(sender, message);
@@ -96,7 +100,7 @@ public class MessageService {
     return MessageDto.toDto(message);
   }
   //송신 메세지 유효성 검사
-  private void validateSendMessage(final User member, final Message message) {
+  private void validateSendMessage( TokenDto member, Message message) {
     if (!message.isSender(member)) {
       throw new Exception(USER_NOT_FOUND);
     }
@@ -107,14 +111,14 @@ public class MessageService {
 
   //수신자와 id가 일치하면 삭제 처리(DB 삭제X)
   @Transactional
-  public void deleteMessageByReceiver(Long id, User user){
+  public void deleteMessageByReceiver(Long id, TokenDto user){
     Message message = messageRepository.findById(id)
         .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
     processDeleteReceiveMessage(user, message);
     checkIsMessageDeletedBySenderAndReceiver(message);
   }
 
-  private void processDeleteReceiveMessage(User user, Message message){
+  private void processDeleteReceiveMessage(TokenDto user, Message message){
     if (!message.getReceiver().isSameUserId(user.getId())){
       throw new Exception(USER_NOT_FOUND);
     }
@@ -123,14 +127,14 @@ public class MessageService {
 
   //송신자와 id가 일치하면 삭제 처리(DB 삭제X)
   @Transactional
-  public void deleteMessageBySender(Long id, User user){
+  public void deleteMessageBySender(Long id, TokenDto user){
     Message message = messageRepository.findById(id)
         .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
     processDeleteSenderMessage(user, message);
     checkIsMessageDeletedBySenderAndReceiver(message);
   }
 
-  private void processDeleteSenderMessage(final User user, final Message message) {
+  private void processDeleteSenderMessage(TokenDto user, Message message) {
     if (!message.getSender().equals(user)) {
       throw new Exception(USER_NOT_FOUND);
     }
@@ -138,7 +142,7 @@ public class MessageService {
   }
 
   //송신자, 수신자 모두 삭제처리되면 DB 에서 삭제
-  private void checkIsMessageDeletedBySenderAndReceiver(final Message message) {
+  private void checkIsMessageDeletedBySenderAndReceiver(Message message) {
     if (message.isDeletedMessage()) {
       messageRepository.delete(message);
     }

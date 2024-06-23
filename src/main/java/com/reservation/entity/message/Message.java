@@ -1,6 +1,7 @@
 package com.reservation.entity.message;
 
 import com.reservation.entity.user.User;
+import com.reservation.jwt.dto.TokenDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -50,7 +51,7 @@ public class Message {
   @CreatedDate
   private LocalDateTime createdAt;
 
-  public boolean isSender(User user){
+  public boolean isSender(TokenDto user){
     return this.getSender().equals(user);
   }
 
