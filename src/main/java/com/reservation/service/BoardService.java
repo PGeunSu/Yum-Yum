@@ -1,69 +1,163 @@
 package com.reservation.service;
 
-import com.reservation.dto.board.BoardRequestDto;
-import com.reservation.dto.board.BoardListResponseDto;
-import com.reservation.dto.board.BoardResponseDto;
-import com.reservation.entity.board.Board;
+import com.reservation.dto.board.BoardCntDto;
+import com.reservation.dto.board.BoardCreateRequest;
+import com.reservation.dto.board.BoardDto;
+import com.reservation.entity.board.*;
+import com.reservation.enum_class.BoardCategory;
 import com.reservation.repository.BoardRepository;
-import lombok.AllArgsConstructor;
+import com.reservation.repository.CommentRepository;
+import com.reservation.repository.LikeRepository;
+import com.reservation.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardService {
+
   private final BoardRepository boardRepository;
-  // 글 생성
-  public BoardResponseDto createBoard(BoardRequestDto requestDto) {
-    Board board = new Board(requestDto);
-    boardRepository.save(board);
-    return new BoardResponseDto(board);
+  private final UserRepository userRepository;
+  private final LikeRepository likeRepository;
+  private final CommentRepository commentRepository;
+  private final S3UploadService s3UploadService;
+  // private final UploadImageService uploadImageService; => 로컬 디렉토리에 저장할 때 사용 => S3UploadService 대신 사용
+
+  public Page<Board> getBoardList(BoardCategory category, PageRequest pageRequest, String searchType, String keyword) {
+    if (searchType != null && keyword != null) {
+      if (searchType.equals("title")) {
+        return boardRepository.findAllByCategoryAndTitleContainsAndUserUserRoleNot(category, keyword, UserRole.ADMIN, pageRequest);
+      } else {
+        return boardRepository.findAllByCategoryAndUserNicknameContainsAndUserUserRoleNot(category, keyword, UserRole.ADMIN, pageRequest);
+      }
+    }
+    return boardRepository.findAllByCategoryAndUserUserRoleNot(category, UserRole.ADMIN, pageRequest);
   }
 
-  // 모든 글 가져오기
-  public List<BoardListResponseDto> findAllBoard() {
-    try{
-      List<Board> boardList = boardRepository.findAll();
+  public List<Board> getNotice(BoardCategory category) {
+    return boardRepository.findAllByCategoryAndUserUserRole(category, UserRole.ADMIN);
+  }
 
-      List<BoardListResponseDto> responseDtoList = new ArrayList<>();
+  public BoardDto getBoard(Long boardId, String category) {
+    Optional<Board> optBoard = boardRepository.findById(boardId);
 
-      for (Board board : boardList) {
-        responseDtoList.add(
-            new BoardListResponseDto(board)
-        );
+    // id에 해당하는 게시글이 없거나 카테고리가 일치하지 않으면 null return
+    if (optBoard.isEmpty() || !optBoard.get().getCategory().toString().equalsIgnoreCase(category)) {
+      return null;
+    }
+
+    return BoardDto.of(optBoard.get());
+  }
+
+  @Transactional
+  public Long writeBoard(BoardCreateRequest req, BoardCategory category, String loginId, Authentication auth) throws IOException {
+    User loginUser = userRepository.findByLoginId(loginId).get();
+
+    Board savedBoard = boardRepository.save(req.toEntity(category, loginUser));
+
+    UploadImage uploadImage = s3UploadService.saveImage(req.getUploadImage(), savedBoard);
+    if (uploadImage != null) {
+      savedBoard.setUploadImage(uploadImage);
+    }
+
+
+
+    return savedBoard.getId();
+  }
+
+  @Transactional
+  public Long editBoard(Long boardId, String category, BoardDto dto) throws IOException {
+    Optional<Board> optBoard = boardRepository.findById(boardId);
+
+    // id에 해당하는 게시글이 없거나 카테고리가 일치하지 않으면 null return
+    if (optBoard.isEmpty() || !optBoard.get().getCategory().toString().equalsIgnoreCase(category)) {
+      return null;
+    }
+
+    Board board = optBoard.get();
+    // 게시글에 이미지가 있었으면 삭제
+    if (board.getUploadImage() != null) {
+      s3UploadService.deleteImage(board.getUploadImage());
+      board.setUploadImage(null);
+    }
+
+    UploadImage uploadImage = s3UploadService.saveImage(dto.getNewImage(), board);
+    if (uploadImage != null) {
+      board.setUploadImage(uploadImage);
+    }
+    board.update(dto);
+
+    return board.getId();
+  }
+
+  @Transactional
+  public Long deleteBoard(Long boardId, String category) {
+    Optional<Board> optBoard = boardRepository.findById(boardId);
+
+    // id에 해당하는 게시글이 없거나 카테고리가 일치하지 않으면 null return
+    if (optBoard.isEmpty() || !optBoard.get().getCategory().toString().equalsIgnoreCase(category)) {
+      return null;
+    }
+
+    Board board = optBoard.get();
+    User boardUser = board.getUser();
+    boardUser.likeChange(boardUser.getReceivedLikeCnt() - board.getLikeCnt());
+    if (board.getUploadImage() != null) {
+      s3UploadService.deleteImage(board.getUploadImage());
+      board.setUploadImage(null);
+    }
+    boardRepository.deleteById(boardId);
+    return boardId;
+  }
+
+  public String getCategory(Long boardId) {
+    Board board = boardRepository.findById(boardId).get();
+    return board.getCategory().toString().toLowerCase();
+  }
+
+  public List<Board> findMyBoard(String category, String loginId) {
+    if (category.equals("board")) {
+      return boardRepository.findAllByUserLoginId(loginId);
+    } else if (category.equals("like")) {
+      List<Like> likes = likeRepository.findAllByUserLoginId(loginId);
+      List<Board> boards = new ArrayList<>();
+      for (Like like : likes) {
+        boards.add(like.getBoard());
       }
-      return responseDtoList;
-    } catch (Exception e) {
-//            throw new DBEmptyDataException("a");
+      return boards;
+    } else if (category.equals("comment")) {
+      List<Comment> comments = commentRepository.findAllByUserLoginId(loginId);
+      List<Board> boards = new ArrayList<>();
+      HashSet<Long> commentIds = new HashSet<>();
+
+      for (Comment comment : comments) {
+        if (!commentIds.contains(comment.getBoard().getId())) {
+          boards.add(comment.getBoard());
+          commentIds.add(comment.getBoard().getId());
+        }
+      }
+      return boards;
     }
     return null;
   }
 
-  // 글 하나 가져오기
-  public BoardResponseDto findOneBoard(Long id) {
-    Board board = boardRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("조회 실패")
-    );
-    return new BoardResponseDto(board);
-  }
-
-  // 글 수정
-  @Transactional
-  public Long updateBoard(Long id, BoardRequestDto requestDto) {
-    Board board = boardRepository.findById(id).orElseThrow(
-        () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
-    );
-    board.update(requestDto);
-    return board.getId();
-  }
-
-  // 삭제
-  @Transactional
-  public Long deleteBoard(Long id) {
-    boardRepository.deleteById(id);
-    return id;
+  public BoardCntDto getBoardCnt(){
+    return BoardCntDto.builder()
+        .totalBoardCnt(boardRepository.count())
+        .totalNoticeCnt(boardRepository.countAllByUserUserRole(UserRole.ADMIN))
+        .totalGreetingCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.GREETING, UserRole.ADMIN))
+        .totalFreeCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.FREE, UserRole.ADMIN))
+        .totalGoldCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.GOLD, UserRole.ADMIN))
+        .build();
   }
 }

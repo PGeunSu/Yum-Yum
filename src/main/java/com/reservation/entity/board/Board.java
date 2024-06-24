@@ -1,46 +1,64 @@
 package com.reservation.entity.board;
 
-import com.reservation.dto.board.BoardRequestDto;
+import com.reservation.enum_class.BaseEntity;
+import com.reservation.dto.board.BoardDto;
+import com.reservation.enum_class.BoardCategory;
+import com.reservation.entity.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import jakarta.persistence.*;
+import java.util.List;
 
-@Setter
-@Getter // get 함수를 일괄적으로 생성
-@NoArgsConstructor // 기본 생성자를 생성
-@Entity(name = "users") // DB 테이블 역할
-public class Board extends Timestamped {
-  // 글 고유 아이디
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Id
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+
+
+public class Board extends BaseEntity {
+
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // 글 제목
-  @Column(nullable = false)
-  private String title;
+  private String title;   // 제목
+  private String body;    // 본문
 
-  // 글 내용
-  @Column(nullable = false)
-  private String content;
+  @Enumerated(EnumType.STRING)
+  private BoardCategory category; // 카테고리
 
-  // 비밀번호
-  @Column(nullable = false)
-  private String password;
+  @ManyToOne(fetch = FetchType.LAZY)
+  private User user;      // 작성자
 
-  // requestDto 정보를 가져와서 entity 만들 때 사용
-  public Board(BoardRequestDto requestDto) {
-    this.title = requestDto.getTitle();
-    this.content = requestDto.getContent();
-    this.password = requestDto.getPassword();
+  @OneToMany(mappedBy = "board", orphanRemoval = true)
+  private List<Like> likes;       // 좋아요
+  private Integer likeCnt;        // 좋아요 수
+
+  @OneToMany(mappedBy = "board", orphanRemoval = true)
+  private List<Comment> comments; // 댓글
+  private Integer commentCnt;     // 댓글 수
+
+  @OneToOne(fetch = FetchType.LAZY)
+  private UploadImage uploadImage;
+
+  public void update(BoardDto dto) {
+    this.title = dto.getTitle();
+    this.body = dto.getBody();
   }
 
-  // 업데이트 메소드
-  public void update(BoardRequestDto requestDto) {
-    this.title = requestDto.getTitle();
-    this.content = requestDto.getContent();
-    this.password = requestDto.getPassword();
+  public void likeChange(Integer likeCnt) {
+    this.likeCnt = likeCnt;
+  }
+
+  public void commentChange(Integer commentCnt) {
+    this.commentCnt = commentCnt;
+  }
+
+  public void setUploadImage(UploadImage uploadImage) {
+    this.uploadImage = uploadImage;
   }
 
 }
