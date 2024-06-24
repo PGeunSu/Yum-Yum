@@ -1,0 +1,56 @@
+<!-- 가게명 검색하는 메인 페이지: 검색->예약/ 지도마커부분 -->
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    .wrap {
+      margin: 200px auto;
+      width: 500px;
+    }
+
+  </style>
+
+<body>
+<main id="container">
+  <div class="wrap">
+    <div class="booking-box">
+      <h1>매장검색</h1>
+      <div>
+        <form action="${contextPath }/reservation/request" method="post"
+              class="cf" name="select">
+          <input type="hidden" name="userId" id="userId"
+                 value="${successLoginUser  }">
+          <iframe src = "../../../resources/templates/map.html" width = "775" height = "400"  ></iframe>
+          <br>
+          <br>
+          <br>
+          <p>
+            </select> <label for="stringsize">고객수(명)</label> <select name="size"
+                                                                     id="stringsize" onchange="checkPrice()">
+            <option value="0">선택하세요</option>
+            <option value="5000">2인</option>
+            <option value="6000">4인</option>
+            <option value="7000">5인-8인이하</option>
+          </select>
+
+            </select> <label for="stringsize">시각</label> <select name="size"
+                                                                  onchange="checkPrice()">
+            <option value="0">선택하세요</option>
+            <option value="5000">점심</option>
+            <option value="6000">저녁</option>
+          </select>
+          </p>
+          <label>예약할 매장명</label> <input type="text" name="name"
+                                                          required="/request" placeholder="입력 후 Enter -> 예약.">
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
