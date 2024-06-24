@@ -50,19 +50,19 @@ public class MessageController {
 
   //보낸 쪽지 한 개 확인
   @GetMapping("/sender/{id}")
-  public ResponseEntity<MessageDto> sendMessage(Long id, @AuthenticationPrincipal TokenDto user){
+  public ResponseEntity<MessageDto> sendMessage(@PathVariable Long id, @AuthenticationPrincipal TokenDto user){
     return ResponseEntity.ok(messageService.sendMessage(id, user));
   }
 
   //받은 쪽지 삭제
   @DeleteMapping("/receiver/{id}")
-  public ResponseEntity<String> deleteReceiveMessage(Long id, @AuthenticationPrincipal TokenDto user){
+  public ResponseEntity<String> deleteReceiveMessage(@PathVariable Long id, @AuthenticationPrincipal TokenDto user){
     messageService.deleteMessageByReceiver(id, user);
     return ResponseEntity.ok("삭제완료");
   }
   //보낸 쪽지 삭제
   @DeleteMapping("/sender/{id}")
-  public ResponseEntity<String> deleteSenderMessage(Long id, @AuthenticationPrincipal TokenDto user){
+  public ResponseEntity<String> deleteSenderMessage(@PathVariable Long id, @AuthenticationPrincipal TokenDto user){
     messageService.deleteMessageBySender(id, user);
     return ResponseEntity.ok("삭제완료");
   }
