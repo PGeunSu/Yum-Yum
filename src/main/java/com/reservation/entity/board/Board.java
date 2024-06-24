@@ -3,6 +3,7 @@ package com.reservation.entity.board;
 import com.reservation.enum_class.BaseEntity;
 import com.reservation.dto.board.BoardDto;
 import com.reservation.enum_class.BoardCategory;
+import com.reservation.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
