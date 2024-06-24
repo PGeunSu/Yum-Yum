@@ -13,10 +13,8 @@ import com.reservation.repository.MessageRepository;
 import com.reservation.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,7 +29,7 @@ public class MessageService {
       return userRepository.findByName(req.getReceiverName())
           .orElseThrow(() -> new Exception(USER_NOT_FOUND));
   }
-  private User getSender(TokenDto sender){
+  private User getTokenUser(TokenDto sender){
     return userRepository.findById(sender.getId())
         .orElseThrow(() -> new Exception(USER_NOT_FOUND));
   }
@@ -39,7 +37,7 @@ public class MessageService {
   //쪽지 생성
   @Transactional
   public MessageDto createMessage(TokenDto sender, MessageCreateDto req){
-    User user = getSender(sender);
+    User user = getTokenUser(sender);
     User receiver = getReceiver(req);
 
     Message message = messageRepository.save(
@@ -56,7 +54,9 @@ public class MessageService {
 
   //수신 메세지 목록
   @Transactional
-  public List<MessageDto> receiveMessageList(TokenDto user){
+  public List<MessageDto> receiveMessageList(TokenDto tokenUser){
+    User user = userRepository.findById(tokenUser.getId())
+        .orElseThrow(() -> new Exception(USER_NOT_FOUND));
     return messageRepository.findAllByReceiverAndDeletedByReceiverFalseOrderByIdDesc(user)
         .stream().map(MessageDto::toDto)
         .collect(Collectors.toList());
@@ -84,12 +84,14 @@ public class MessageService {
 
   //송신 메세지 목록
   @Transactional
-  public List<MessageDto> sendMessageList(TokenDto user){
+  public List<MessageDto> sendMessageList(TokenDto tokenUser){
+    User user = userRepository.findById(tokenUser.getId())
+        .orElseThrow(() -> new Exception(USER_NOT_FOUND));
     return messageRepository.findAllBySenderAndDeletedBySenderFalseOrderByIdDesc(user)
         .stream().map(MessageDto::toDto)
         .collect(Collectors.toList());
   }
-  
+
   //해당 id 메세지 하나만
   @Transactional
   public MessageDto sendMessage(Long id, TokenDto sender){
@@ -100,8 +102,8 @@ public class MessageService {
     return MessageDto.toDto(message);
   }
   //송신 메세지 유효성 검사
-  private void validateSendMessage( TokenDto member, Message message) {
-    if (!message.isSender(member)) {
+  private void validateSendMessage(TokenDto member, Message message) {
+    if (!message.isSender(member)){
       throw new Exception(USER_NOT_FOUND);
     }
     if (message.isDeletedBySender()) {
