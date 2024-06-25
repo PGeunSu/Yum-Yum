@@ -25,7 +25,7 @@ public class LikeService {
     User loginUser = userRepository.findByLoginId(loginId).get();
     User boardUser = board.getUser();
 
-    // 자신이 누른 좋아요가 아니라면
+
     if (!boardUser.equals(loginUser)) {
       boardUser.likeChange(boardUser.getReceivedLikeCnt() + 1);
     }
