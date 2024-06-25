@@ -4,10 +4,10 @@ import com.reservation.dto.board.CommentCreateRequest;
 import com.reservation.entity.board.Board;
 import com.reservation.entity.board.Comment;
 import com.reservation.entity.user.User;
-import com.reservation.enum_class.UserRole;
 import com.reservation.repository.BoardRepository;
 import com.reservation.repository.CommentRepository;
 import com.reservation.repository.UserRepository;
+import com.reservation.type.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +23,9 @@ public class CommentService {
   private final BoardRepository boardRepository;
   private final UserRepository userRepository;
 
-  public void writeComment(Long boardId, CommentCreateRequest req, String loginId) {
+  public void writeComment(Long boardId, CommentCreateRequest req, Long loginId) {
     Board board = boardRepository.findById(boardId).get();
-    User user = userRepository.findByLoginId(loginId).get();
+    User user = userRepository.findById(loginId).get();
     board.commentChange(board.getCommentCnt() + 1);
     commentRepository.save(req.toEntity(board, user));
   }
@@ -35,9 +35,9 @@ public class CommentService {
   }
 
   @Transactional
-  public Long editComment(Long commentId, String newBody, String loginId) {
+  public Long editComment(Long commentId, String newBody, Long loginId) {
     Optional<Comment> optComment = commentRepository.findById(commentId);
-    Optional<User> optUser = userRepository.findByLoginId(loginId);
+    Optional<User> optUser = userRepository.findById(loginId);
     if (optComment.isEmpty() || optUser.isEmpty() || !optComment.get().getUser().equals(optUser.get())) {
       return null;
     }
@@ -48,11 +48,12 @@ public class CommentService {
     return comment.getBoard().getId();
   }
 
-  public Long deleteComment(Long commentId, String loginId) {
+  public Long deleteComment(Long commentId, Long loginId) {
     Optional<Comment> optComment = commentRepository.findById(commentId);
-    Optional<User> optUser = userRepository.findByLoginId(loginId);
+    Optional<User> optUser = userRepository.findById(loginId);
     if (optComment.isEmpty() || optUser.isEmpty() ||
-        (!optComment.get().getUser().equals(optUser.get()) && !optUser.get().getUserRole().equals(UserRole.ADMIN))) {
+        (!optComment.get().getUser().equals(optUser.get()) && !optUser.get().getRole().equals(
+            UserType.ADMIN))) {
       return null;
     }
 
