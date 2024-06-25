@@ -1,5 +1,6 @@
 package com.reservation.entity.board;
 
+import com.reservation.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
