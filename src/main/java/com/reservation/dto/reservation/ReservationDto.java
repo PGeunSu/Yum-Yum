@@ -27,8 +27,8 @@ import lombok.Data;
         public static ReservationDto fromEntity(Reservation reservation){
             return ReservationDto.builder()
                 .id(reservation.getId())
-                .user(String.valueOf(reservation.getUser()))
-                .restaurant(String.valueOf(reservation.getRestaurant()))
+                .user(reservation.getUser().getName())
+                .restaurant(reservation.getRestaurant().getPost())
                 .time(String.valueOf(reservation.getTime()))
                 .place(reservation.getPlace())
                 .name(reservation.getName())

@@ -1,6 +1,11 @@
 package com.reservation.service;
 
 
+import static com.reservation.exception.ErrorCode.ACCESS_DENIED;
+import static com.reservation.exception.ErrorCode.RESERVATION_NOT_FOUND;
+import static com.reservation.exception.ErrorCode.STORE_NOT_FOUND;
+import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
+
 import com.reservation.dto.reservation.MakeReservation;
 import com.reservation.dto.reservation.MakeReservation.Request;
 import com.reservation.dto.reservation.ReservationDto;
@@ -9,6 +14,7 @@ import com.reservation.entity.reservation.Restaurant;
 import com.reservation.entity.user.User;
 import com.reservation.exception.ErrorCode;
 import com.reservation.exception.ReservationException;
+import com.reservation.jwt.dto.TokenDto;
 import com.reservation.repository.ReservationRepository;
 import com.reservation.repository.RestaurantRepository;
 import com.reservation.repository.UserRepository;
@@ -38,12 +44,12 @@ import org.springframework.transaction.annotation.Transactional;
         }
 
         //매장 예약 Request를 바탕으로 Reservation(entity) 생성
-        private Reservation makeReservationEntity(Request request){
+        private Reservation makeReservationEntity(MakeReservation.Request request){
             User user = userRepository.findByEmail(request.getUserId())//id 관련부분 구현필요.
-                .orElseThrow(() -> new ReservationException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new ReservationException(USER_NOT_FOUND));
             // 매장 예약이 진행되는 부분
             Restaurant restaurant = restaurantRepository.findByPost(request.getRestaurant())
-                .orElseThrow(() -> new ReservationException(ErrorCode.STORE_NOT_FOUND));
+                .orElseThrow(() -> new ReservationException(STORE_NOT_FOUND));
 //            LocalDateTime reservationTime = LocalDateTime.of(request.getDate(), request.getTime());
 
             return Reservation.builder()
@@ -57,22 +63,22 @@ import org.springframework.transaction.annotation.Transactional;
         }
 
         //user - 예약 상세 정보
-        public ReservationDto reservationDetail(Long id, String username){
+        public ReservationDto reservationDetail(Long id, TokenDto user){
             Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ReservationException(ErrorCode.RESERVATION_NOT_FOUND));
+                .orElseThrow(() -> new ReservationException(RESERVATION_NOT_FOUND));
 
-            if (!this.validateReservationAccessAuthority(username, reservation)) {
-                throw new ReservationException(ErrorCode.ACCESS_DENIED);
+            if (!this.validateReservationAccessAuthority(user, reservation)) {
+                throw new ReservationException(ACCESS_DENIED);
             }
 
             return ReservationDto.fromEntity(reservation);
         }
 
 
-        //userDetails의 username이 reservationDto의 userId 일치 확인
-        private boolean validateReservationAccessAuthority(String username, Reservation reservation) {
-            if (reservation.getUser().equals(username)) {
-                log.info("UserID : {}, 예약 내역 확인", username);
+        //jwt 의 회원정보가 reservation 의 userId 일치 확인
+        private boolean validateReservationAccessAuthority(TokenDto user, Reservation reservation) {
+            if (reservation.getUser().getId().equals(user.getId())) {
+                log.info("UserID : {}, 예약 내역 확인", user.getId());
                 return true;
             }
             return false;
