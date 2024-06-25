@@ -7,7 +7,6 @@ import com.reservation.dto.board.BoardCreateRequest;
 import com.reservation.dto.board.BoardDto;
 import com.reservation.entity.board.*;
 import com.reservation.entity.user.User;
-import com.reservation.exception.ErrorCode;
 import com.reservation.exception.Exception;
 import com.reservation.jwt.dto.TokenDto;
 import com.reservation.type.BoardCategory;
@@ -37,22 +36,22 @@ public class BoardService {
   private final UserRepository userRepository;
   private final LikeRepository likeRepository;
   private final CommentRepository commentRepository;
-  private final S3UploadService s3UploadService;
+//  private final S3UploadService s3UploadService;
   // private final UploadImageService uploadImageService; => 로컬 디렉토리에 저장할 때 사용 => S3UploadService 대신 사용
 
   public Page<Board> getBoardList(BoardCategory category, PageRequest pageRequest, String searchType, String keyword) {
     if (searchType != null && keyword != null) {
       if (searchType.equals("title")) {
-        return boardRepository.findAllByCategoryAndTitleContainsAndUserUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
+        return boardRepository.findAllByCategoryAndTitleContainsAndUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
       } else {
-        return boardRepository.findAllByCategoryAndUserNameContainsAndUserUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
+        return boardRepository.findAllByCategoryAndUserNameContainsAndUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
       }
     }
-    return boardRepository.findAllByCategoryAndUserUserRoleNot(category, UserType.ADMIN, pageRequest);
+    return boardRepository.findAllByCategoryAndUserRoleNot(category, UserType.ADMIN, pageRequest);
   }
 
   public List<Board> getNotice(BoardCategory category) {
-    return boardRepository.findAllByCategoryAndUserUserRole(category, UserType.ADMIN);
+    return boardRepository.findAllByCategoryAndUserRole(category, UserType.ADMIN);
   }
 
   public BoardDto getBoard(Long boardId, String category) {
@@ -72,11 +71,11 @@ public class BoardService {
         .orElseThrow((() -> new Exception(USER_NOT_FOUND)));
 
     Board savedBoard = boardRepository.save(req.toEntity(category, loginUser));
-
-    UploadImage uploadImage = s3UploadService.saveImage(req.getUploadImage(), savedBoard);
-    if (uploadImage != null) {
-      savedBoard.setUploadImage(uploadImage);
-    }
+//
+//    UploadImage uploadImage = s3UploadService.saveImage(req.getUploadImage(), savedBoard);
+//    if (uploadImage != null) {
+//      savedBoard.setUploadImage(uploadImage);
+//    }
 
     return savedBoard.getId();
   }
@@ -92,15 +91,15 @@ public class BoardService {
 
     Board board = optBoard.get();
     // 게시글에 이미지가 있었으면 삭제
-    if (board.getUploadImage() != null) {
-      s3UploadService.deleteImage(board.getUploadImage());
-      board.setUploadImage(null);
-    }
+//    if (board.getUploadImage() != null) {
+//      s3UploadService.deleteImage(board.getUploadImage());
+//      board.setUploadImage(null);
+//    }
 
-    UploadImage uploadImage = s3UploadService.saveImage(dto.getNewImage(), board);
-    if (uploadImage != null) {
-      board.setUploadImage(uploadImage);
-    }
+//    UploadImage uploadImage = s3UploadService.saveImage(dto.getNewImage(), board);
+//    if (uploadImage != null) {
+//      board.setUploadImage(uploadImage);
+//    }
     board.update(dto);
 
     return board.getId();
@@ -116,12 +115,12 @@ public class BoardService {
     }
 
     Board board = optBoard.get();
-    User boardUser = board.getUser();
+//    User boardUser = board.getUser();
 //    boardUser.likeChange(boardUser.getReceivedLikeCnt() - board.getLikeCnt());
-    if (board.getUploadImage() != null) {
-      s3UploadService.deleteImage(board.getUploadImage());
-      board.setUploadImage(null);
-    }
+//    if (board.getUploadImage() != null) {
+//      s3UploadService.deleteImage(board.getUploadImage());
+//      board.setUploadImage(null);
+//    }
     boardRepository.deleteById(boardId);
     return boardId;
   }
@@ -133,7 +132,9 @@ public class BoardService {
 
   public List<Board> findMyBoard(String category, TokenDto loginId) {
     if (category.equals("board")) {
-      return boardRepository.findAllByUser(loginId.getId());
+      User user = userRepository.findById(loginId.getId())
+          .orElseThrow(() -> new Exception(USER_NOT_FOUND));
+      return boardRepository.findAllByUser(user);
     } else if (category.equals("like")) {
       List<Like> likes = likeRepository.findAllByUserId(loginId.getId());
       List<Board> boards = new ArrayList<>();
@@ -160,7 +161,7 @@ public class BoardService {
   public BoardCntDto getBoardCnt(){
     return BoardCntDto.builder()
         .totalBoardCnt(boardRepository.count())
-        .totalNoticeCnt(boardRepository.countAllByUserUserRole(UserType.ADMIN))
+        .totalNoticeCnt(boardRepository.countAllByUserRole(UserType.ADMIN))
 //        .totalGreetingCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.A, UserType.ADMIN))
 //        .totalFreeCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.B, UserType.ADMIN))
 //        .totalGoldCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.C, UserType.ADMIN))

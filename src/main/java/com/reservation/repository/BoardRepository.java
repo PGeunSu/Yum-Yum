@@ -2,7 +2,6 @@ package com.reservation.repository;
 
 import com.reservation.entity.board.Board;
 import com.reservation.entity.user.User;
-import com.reservation.jwt.dto.TokenDto;
 import com.reservation.type.BoardCategory;
 import com.reservation.type.UserType;
 import org.springframework.data.domain.Page;
@@ -15,11 +14,11 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-  Page<Board> findAllByCategoryAndUserUserRoleNot(BoardCategory category, UserType userRole, PageRequest pageRequest);
-  Page<Board> findAllByCategoryAndTitleContainsAndUserUserRoleNot(BoardCategory category, String title, UserType userRole, PageRequest pageRequest);
-  Page<Board> findAllByCategoryAndUserNameContainsAndUserUserRoleNot(BoardCategory category, String nickname, UserType userRole, PageRequest pageRequest);
-  List<Board> findAllByUser(Long loginId);
-  List<Board> findAllByCategoryAndUserUserRole(BoardCategory category, UserType userRole);
-  Long countAllByUserUserRole(UserType userRole);
-  Long countAllByCategoryAndUserUserRoleNot(BoardCategory category, UserType userRole);
+  Page<Board> findAllByCategoryAndUserRoleNot(BoardCategory category, UserType userRole, PageRequest pageRequest);
+  Page<Board> findAllByCategoryAndTitleContainsAndUserRoleNot(BoardCategory category, String title, UserType userRole, PageRequest pageRequest);
+  Page<Board> findAllByCategoryAndUserNameContainsAndUserRoleNot(BoardCategory category, String nickname, UserType userRole, PageRequest pageRequest);
+  List<Board> findAllByUser(User loginId);
+  List<Board> findAllByCategoryAndUserRole(BoardCategory category, UserType userRole);
+  Long countAllByUserRole(UserType userRole);
+  Long countAllByCategoryAndUserRoleNot(BoardCategory category, UserType userRole);
 }

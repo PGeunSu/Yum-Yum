@@ -15,7 +15,6 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @Builder
 @Getter
-
 public class Comment {
 
 

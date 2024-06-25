@@ -4,6 +4,7 @@ import com.reservation.dto.board.BoardCreateRequest;
 import com.reservation.dto.board.BoardDto;
 import com.reservation.dto.board.BoardSearchRequest;
 import com.reservation.dto.board.CommentCreateRequest;
+import com.reservation.jwt.dto.TokenDto;
 import com.reservation.type.BoardCategory;
 import com.reservation.service.*;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,7 @@ public class BoardController {
   private final BoardService boardService;
   private final LikeService likeService;
   private final CommentService commentService;
-  private final S3UploadService s3UploadService;
+//  private final S3UploadService s3UploadService;
   // private final UploadImageService uploadImageService; => 로컬 디렉토리에 저장할 때 사용 => S3UploadService 대신 사용
 
   @GetMapping("/{category}")
@@ -92,10 +94,10 @@ public class BoardController {
     @GetMapping("/{category}/{boardId}")
     public String boardDetailPage (@PathVariable String category, @PathVariable Long boardId, Model
     model,
-        Authentication auth){
-      if (auth != null) {
-        model.addAttribute("loginUserLoginId", auth.getName());
-        model.addAttribute("likeCheck", likeService.checkLike(auth.getName(), boardId));
+        @AuthenticationPrincipal TokenDto user){
+      if (user != null) {
+        model.addAttribute("loginUserLoginId", user.getName());
+        model.addAttribute("likeCheck", likeService.checkLike(user.getId(), boardId));
       }
 
       BoardDto boardDto = boardService.getBoard(boardId, category);
@@ -148,15 +150,15 @@ public class BoardController {
       return "printMessage";
     }
 
-    @ResponseBody
-    @GetMapping("/images/{filename}")
-    public Resource showImage (@PathVariable String filename) throws MalformedURLException {
-      return new UrlResource(s3UploadService.getFullPath(filename));
-    }
-
-    @GetMapping("/images/download/{boardId}")
-    public ResponseEntity<UrlResource> downloadImage (@PathVariable Long boardId) throws
-    MalformedURLException {
-      return s3UploadService.downloadImage(boardId);
-    }
+//    @ResponseBody
+//    @GetMapping("/images/{filename}")
+//    public Resource showImage (@PathVariable String filename) throws MalformedURLException {
+//      return new UrlResource(s3UploadService.getFullPath(filename));
+//    }
+//
+//    @GetMapping("/images/download/{boardId}")
+//    public ResponseEntity<UrlResource> downloadImage (@PathVariable Long boardId) throws
+//    MalformedURLException {
+//      return s3UploadService.downloadImage(boardId);
+//    }
   }

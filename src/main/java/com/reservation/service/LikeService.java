@@ -57,8 +57,8 @@ public class LikeService {
 //    likeRepository.deleteByUserLoginIdAndBoardId(loginId, boardId);
 //  }
 
-  public Boolean checkLike(String loginId, Long boardId) {
-    return likeRepository.existsByUserLoginIdAndBoardId(loginId, boardId);
+  public Boolean checkLike(Long loginId, Long boardId) {
+    return likeRepository.existsByUserIdAndBoardId(loginId, boardId);
   }
 
   public Like getLikePost(Long userId) {
@@ -89,7 +89,7 @@ public class LikeService {
       board.likeChange(board.getLikeCnt() - 1); // 게시글에 좋아요 - 1
 
 
-      likeRepository.deleteByUserLoginIdAndBoardId(loginUser.getId(), board.getId());
+      likeRepository.deleteByUserIdAndBoardId(loginUser.getId(), board.getId());
     }
   }
 }

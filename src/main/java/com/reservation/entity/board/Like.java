@@ -14,7 +14,6 @@ import jakarta.persistence.*;
 @Builder
 @Getter
 @Table(name = "\"like\"")
-
 public class Like {
 
 
