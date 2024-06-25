@@ -2,8 +2,8 @@ package com.reservation.dto.board;
 
 
 import com.reservation.entity.board.Board;
-import com.reservation.entity.User; //유저연동
-import com.reservation.enum_class.BoardCategory;
+import com.reservation.entity.user.User;
+import com.reservation.type.BoardCategory;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 

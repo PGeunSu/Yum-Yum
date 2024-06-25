@@ -1,18 +1,24 @@
 package com.reservation.service;
 
+import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
+
 import com.reservation.dto.board.BoardCntDto;
 import com.reservation.dto.board.BoardCreateRequest;
 import com.reservation.dto.board.BoardDto;
 import com.reservation.entity.board.*;
-import com.reservation.enum_class.BoardCategory;
+import com.reservation.entity.user.User;
+import com.reservation.exception.ErrorCode;
+import com.reservation.exception.Exception;
+import com.reservation.jwt.dto.TokenDto;
+import com.reservation.type.BoardCategory;
 import com.reservation.repository.BoardRepository;
 import com.reservation.repository.CommentRepository;
 import com.reservation.repository.LikeRepository;
 import com.reservation.repository.UserRepository;
+import com.reservation.type.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -36,16 +42,16 @@ public class BoardService {
   public Page<Board> getBoardList(BoardCategory category, PageRequest pageRequest, String searchType, String keyword) {
     if (searchType != null && keyword != null) {
       if (searchType.equals("title")) {
-        return boardRepository.findAllByCategoryAndTitleContainsAndUserUserRoleNot(category, keyword, UserRole.ADMIN, pageRequest);
+        return boardRepository.findAllByCategoryAndTitleContainsAndUserUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
       } else {
-        return boardRepository.findAllByCategoryAndUserNicknameContainsAndUserUserRoleNot(category, keyword, UserRole.ADMIN, pageRequest);
+        return boardRepository.findAllByCategoryAndUserNameContainsAndUserUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
       }
     }
-    return boardRepository.findAllByCategoryAndUserUserRoleNot(category, UserRole.ADMIN, pageRequest);
+    return boardRepository.findAllByCategoryAndUserUserRoleNot(category, UserType.ADMIN, pageRequest);
   }
 
   public List<Board> getNotice(BoardCategory category) {
-    return boardRepository.findAllByCategoryAndUserUserRole(category, UserRole.ADMIN);
+    return boardRepository.findAllByCategoryAndUserUserRole(category, UserType.ADMIN);
   }
 
   public BoardDto getBoard(Long boardId, String category) {
@@ -60,8 +66,9 @@ public class BoardService {
   }
 
   @Transactional
-  public Long writeBoard(BoardCreateRequest req, BoardCategory category, String loginId, Authentication auth) throws IOException {
-    User loginUser = userRepository.findByLoginId(loginId).get();
+  public Long writeBoard(BoardCreateRequest req, BoardCategory category, TokenDto loginId) throws IOException {
+    User loginUser = userRepository.findById(loginId.getId())
+        .orElseThrow((() -> new Exception(USER_NOT_FOUND)));
 
     Board savedBoard = boardRepository.save(req.toEntity(category, loginUser));
 
@@ -69,8 +76,6 @@ public class BoardService {
     if (uploadImage != null) {
       savedBoard.setUploadImage(uploadImage);
     }
-
-
 
     return savedBoard.getId();
   }
@@ -111,7 +116,7 @@ public class BoardService {
 
     Board board = optBoard.get();
     User boardUser = board.getUser();
-    boardUser.likeChange(boardUser.getReceivedLikeCnt() - board.getLikeCnt());
+//    boardUser.likeChange(boardUser.getReceivedLikeCnt() - board.getLikeCnt());
     if (board.getUploadImage() != null) {
       s3UploadService.deleteImage(board.getUploadImage());
       board.setUploadImage(null);
@@ -125,18 +130,18 @@ public class BoardService {
     return board.getCategory().toString().toLowerCase();
   }
 
-  public List<Board> findMyBoard(String category, String loginId) {
+  public List<Board> findMyBoard(String category, TokenDto loginId) {
     if (category.equals("board")) {
-      return boardRepository.findAllByUserLoginId(loginId);
+      return boardRepository.findAllByUser(loginId.getId());
     } else if (category.equals("like")) {
-      List<Like> likes = likeRepository.findAllByUserLoginId(loginId);
+      List<Like> likes = likeRepository.findAllByUserId(loginId.getId());
       List<Board> boards = new ArrayList<>();
       for (Like like : likes) {
         boards.add(like.getBoard());
       }
       return boards;
     } else if (category.equals("comment")) {
-      List<Comment> comments = commentRepository.findAllByUserLoginId(loginId);
+      List<Comment> comments = commentRepository.findAllByUserId(loginId.getId());
       List<Board> boards = new ArrayList<>();
       HashSet<Long> commentIds = new HashSet<>();
 
@@ -154,10 +159,10 @@ public class BoardService {
   public BoardCntDto getBoardCnt(){
     return BoardCntDto.builder()
         .totalBoardCnt(boardRepository.count())
-        .totalNoticeCnt(boardRepository.countAllByUserUserRole(UserRole.ADMIN))
-        .totalGreetingCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.GREETING, UserRole.ADMIN))
-        .totalFreeCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.FREE, UserRole.ADMIN))
-        .totalGoldCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.GOLD, UserRole.ADMIN))
+        .totalNoticeCnt(boardRepository.countAllByUserUserRole(UserType.ADMIN))
+//        .totalGreetingCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.A, UserType.ADMIN))
+//        .totalFreeCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.B, UserType.ADMIN))
+//        .totalGoldCnt(boardRepository.countAllByCategoryAndUserUserRoleNot(BoardCategory.C, UserType.ADMIN))
         .build();
   }
 }
