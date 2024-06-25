@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header.html :: head" />
+<body>
+<div th:replace="fragments/header.html :: header ('home')"/>
+<div class="row">
+  <div class="offset-1 col-5 card" style="height: fit-content">
+    <div class="card-body">
+      <h2>게시판 설명</h2>
+      <h5>&ast; 메인페이지.</h5>
+
+    </div>
+
+
+</body>
+<style>
+  h2 {
+      margin-bottom: 20px;
+  }
+  h5 {
+      margin-bottom: 10px;
+  }
+</style>
+</html>
