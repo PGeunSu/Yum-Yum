@@ -1,9 +1,9 @@
 package com.reservation.entity.user;
 
-import static com.reservation.type.Authority.ROLE_USER;
+import static com.reservation.type.UserType.USER;
 
 import com.reservation.dto.user.SignUpForm;
-import com.reservation.type.Authority;
+import com.reservation.type.UserType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,7 +15,9 @@ import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,9 +36,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Builder
 @EntityListeners(value = AuditingEntityListener.class)
-public class User implements UserDetails{
+public class User implements UserDetails {
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true) //이메일은 unique 함
@@ -45,7 +48,7 @@ public class User implements UserDetails{
   private String name;
 
   @Enumerated(EnumType.STRING)
-  private Authority role; //회원 상태
+  private UserType role; //회원 상태
 
   //인증
   private boolean verify;
@@ -57,7 +60,7 @@ public class User implements UserDetails{
   @LastModifiedDate
   private LocalDateTime modifiedAt;
 
-  public void verificationSuccess(boolean verify){
+  public void verificationSuccess(boolean verify) {
     this.verify = verify;
   }
 
@@ -66,17 +69,25 @@ public class User implements UserDetails{
     this.verifyExpiredAt = verifyExpiredAt;
   }
 
-  public static User from(SignUpForm form){
+  public static User from(SignUpForm form) {
     return User.builder()
         .email(form.getEmail())
         .name(form.getName())
         .password(form.getPassword())
-        .role(ROLE_USER)
+        .role(USER)
         .verify(false)
         .build();
   }
 
-
+  //회원정보 수정 (이름과, 비밀번호만 수정 가능)
+  public void modify(String name, String password){
+    this.name = name;
+    this.password = password;
+  }
+  //Id 일치 여부
+  public boolean isSameUserId(Long id) {
+    return Objects.equals(this.id, id);
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -87,26 +98,26 @@ public class User implements UserDetails{
 
   @Override
   public String getUsername() {
-    return "";
+    return this.name;
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
+    return true;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return UserDetails.super.isAccountNonLocked();
+    return true;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return UserDetails.super.isCredentialsNonExpired();
+    return true;
   }
 
   @Override
   public boolean isEnabled() {
-    return UserDetails.super.isEnabled();
+    return true;
   }
 }

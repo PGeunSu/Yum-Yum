@@ -49,3 +49,4 @@ public class Reservation {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
+
