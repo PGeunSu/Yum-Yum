@@ -19,6 +19,7 @@ import com.reservation.type.UserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
