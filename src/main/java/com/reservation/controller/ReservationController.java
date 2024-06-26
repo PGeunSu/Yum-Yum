@@ -31,7 +31,8 @@ public class ReservationController {
     @PostMapping("/request")
     public ResponseEntity<?> reservation(@RequestBody MakeReservation.Request request,
         @AuthenticationPrincipal TokenDto user) {
-        request.setRestaurant(String.valueOf(user.getId()));
+        request.setUserId(user.getEmail());
+        request.setRestaurant(request.getRestaurant());
         ReservationDto reservationDto = reservationService.makeReservation(request);
 
         return ResponseEntity.ok(MakeReservation.Response.fromDto(reservationDto));

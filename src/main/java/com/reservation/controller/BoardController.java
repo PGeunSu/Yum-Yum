@@ -33,6 +33,8 @@ public class BoardController {
 //  private final S3UploadService s3UploadService;
   // private final UploadImageService uploadImageService; => 로컬 디렉토리에 저장할 때 사용 => S3UploadService 대신 사용
 
+
+
   @GetMapping("/{category}")
   public String boardListPage(@PathVariable String category, Model model,
       @RequestParam(required = false, defaultValue = "1") int page,
@@ -81,7 +83,7 @@ public class BoardController {
   }
 
   @PostMapping("/{category}")
-  public String boardWrite(@PathVariable String category, @ModelAttribute BoardCreateRequest req,Model model)
+  public String boardWrite(@PathVariable String category, @ModelAttribute BoardCreateRequest req, Model model)
       throws IOException {
     BoardCategory boardCategory = BoardCategory.of(category);
     if (boardCategory == null) {

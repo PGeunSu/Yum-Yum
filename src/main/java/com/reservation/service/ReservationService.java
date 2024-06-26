@@ -53,12 +53,12 @@ import org.springframework.transaction.annotation.Transactional;
 //            LocalDateTime reservationTime = LocalDateTime.of(request.getDate(), request.getTime());
 
             return Reservation.builder()
+                .user(user)
+                .restaurant(restaurant)
                 .name(user.getName())
-                .id(user.getId())
                 .place(restaurant.getPost())
                 .reservationStatus(ReservationStatus.REQUESTING)
                 .createdAt(LocalDateTime.now())
-//                .time(reservationTime)
                 .build();
         }
 

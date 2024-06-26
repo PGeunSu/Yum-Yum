@@ -13,9 +13,6 @@ import lombok.Data;
     public class ReservationDto {
         private Long id;
 
-        private String user;
-        private String restaurant;
-
         private String time;
         private String place;
         private String name;
@@ -27,8 +24,6 @@ import lombok.Data;
         public static ReservationDto fromEntity(Reservation reservation){
             return ReservationDto.builder()
                 .id(reservation.getId())
-                .user(reservation.getUser().getName())
-                .restaurant(reservation.getRestaurant().getPost())
                 .time(String.valueOf(reservation.getTime()))
                 .place(reservation.getPlace())
                 .name(reservation.getName())
