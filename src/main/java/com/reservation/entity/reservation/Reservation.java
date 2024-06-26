@@ -13,7 +13,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +30,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @Builder
-@EntityListeners(value = AuditingEntityListener.class)
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,15 +45,18 @@ public class Reservation {
     private Restaurant restaurant;
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime time;
+    private String time;
+
+    private LocalDateTime createdAt;
     private String place;
     private String name;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
-
-    private LocalDateTime createdAt;
+    @PrePersist
+    public void onPrePersist() {
+        this.time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+}
 }
 
