@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,6 +22,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -36,12 +39,14 @@ public class Reservation {
     @Column(name = "rsv_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")//이름 논의 필요
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE) // 회원의 계정이 삭제되었을 경우 같이 삭제
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "res_id")//이름 논의 필요
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "res_id")
+    @OnDelete(action = OnDeleteAction.CASCADE) // 매장이 삭제되었을 경우 같이 삭제
     private Restaurant restaurant;
 
     @CreatedDate

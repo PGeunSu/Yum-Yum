@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @AllArgsConstructor
@@ -30,6 +32,7 @@ public class Board extends BaseEntity {
   private BoardCategory category; // 카테고리
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE) // 회원의 계정이 삭제되었을 경우 같이 삭제
   private User user;      // 작성자
 
   @OneToMany(mappedBy = "board", orphanRemoval = true)
