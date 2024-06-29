@@ -15,6 +15,7 @@ import com.reservation.dto.user.UserModifiedDto;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
 import com.reservation.jwt.config.JwtTokenProvider;
+import com.reservation.jwt.dto.TokenDto;
 import com.reservation.jwt.filter.Aes256Util;
 import com.reservation.mailgun.SendMailForm;
 import com.reservation.repository.UserRepository;
@@ -25,12 +26,13 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService{
 
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
@@ -61,12 +63,12 @@ public class UserService {
     } else {
       User u = signUp(form);
       String code = getRandomCode();
-      SendMailForm mailForm = SendMailForm.builder()
-          .from("yum-yum@email.com")
-          .to(form.getEmail())
-          .subject("Verification Email")
-          .text(getVerificationEmail(form.getEmail(), form.getName(), code))
-          .build();
+//      SendMailForm mailForm = SendMailForm.builder()
+//          .from("yum-yum@email.com")
+//          .to(form.getEmail())
+//          .subject("Verification Email")
+//          .text(getVerificationEmail(form.getEmail(), form.getName(), code))
+//          .build();
       validateEmail(u.getId(), code);
 
       return UserDto.from(u);
@@ -116,12 +118,33 @@ public class UserService {
     }
     return null;
   }
+  public User login(SignInForm form) {
+    Optional<User> optionalUser = userRepository.findByEmail(form.getEmail());
+    // loginId와 일치하는 User가 없으면 null return
+    if(optionalUser.isEmpty()) {
+      return null;
+    }
+    User user = optionalUser.get();
 
-  public String loginToken(SignInForm form) {
-    User user = findValidUser(form.getEmail(), form.getPassword())
-        .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
-    return jwtTokenProvider.createToken(user);
+    return user;
+  }
+  public User getUser(String email){
+    if (email == null){
+      return null;
+    }
+    Optional<User> user = userRepository.findByEmail(email);
+    if (user.isEmpty()){
+      return null;
+    }
+    return user.get();
   }
 
+  public String loginToken(SignInForm form) {
+//    User user = findValidUser(form.getEmail(), form.getPassword())
+//        .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
+    User user = userRepository.findByEmail(form.getEmail())
+        .orElseThrow(()-> new Exception(LOGIN_CHECK_FAIL));
+    return jwtTokenProvider.createToken(user);
+  }
 
 }

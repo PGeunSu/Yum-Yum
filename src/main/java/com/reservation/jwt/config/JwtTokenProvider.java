@@ -47,20 +47,19 @@ public class JwtTokenProvider {
   }
 
   //Jwt 토큰 정보 추출
-  public TokenDto getAuthentication(String token) {
-   Claims claims = Jwts.parserBuilder()
+  public Claims getAuthentication(String token) {
+   return Jwts.parserBuilder()
        .setSigningKey(key)
        .build()
        .parseClaimsJws(token)
        .getBody();
 
-   return TokenDto.builder()
-       .id(Long.valueOf(claims.getSubject()))
-       .email(claims.get("email", String.class))
-       .name(claims.get("name", String.class))
-       .role(UserType.valueOf(claims.get("role", String.class)))
-       .build();
-
+//   return TokenDto.builder()
+//       .id(Long.valueOf(claims.getSubject()))
+//       .email(claims.get("email", String.class))
+//       .name(claims.get("name", String.class))
+//       .role(UserType.valueOf(claims.get("role", String.class)))
+//       .build();
   }
 
 

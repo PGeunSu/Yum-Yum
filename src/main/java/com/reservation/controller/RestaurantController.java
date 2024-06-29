@@ -22,6 +22,5 @@ public class RestaurantController {
     public ResponseEntity<?> restaurantList(@RequestParam(value = "p", defaultValue = "1") Integer page,
         @RequestBody RestaurantList input) {
         return ResponseEntity.ok(restaurantService.findById(input.getId()));
-
     }
 }
