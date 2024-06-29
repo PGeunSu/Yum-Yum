@@ -4,6 +4,18 @@
       layout:decorate="~{layout/layout}">
 <div layout:fragment="content">
   <h1>메인 페이지</h1>
+
+  <div th:if="${name == null}">
+    <h3>로그인 되어있지 않습니다!</h3>
+    <button th:onclick="|location.href='@{/{loginType}/join (loginType=${loginType})}'|">회원 가입</button> <br/><br/>
+    <button th:onclick="|location.href='@{/{loginType}/login (loginType=${loginType})}'|">로그인</button>
+  </div>
+  <div th:unless="${name == null}">
+    <h3>[[${nickname}]]님 환영합니다!</h3>
+    <button th:onclick="|location.href='@{/{loginType}/info (loginType=${loginType})}'|">유저 정보</button> <br/><br/>
+    <button th:onclick="|location.href='@{/{loginType}/admin (loginType=${loginType})}'|">관리자 페이지</button> <br/><br/>
+    <button th:onclick="|location.href='@{/{loginType}/logout (loginType=${loginType})}'|">로그아웃</button>
+  </div>
 </div>
 
 </html>
