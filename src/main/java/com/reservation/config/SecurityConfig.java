@@ -52,17 +52,6 @@ public class SecurityConfig {
             UsernamePasswordAuthenticationFilter.class)
         .sessionManagement(
             (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        .formLogin(customizer -> customizer
-//            .loginPage("/users/signIn") //로그인 페이지 url 설정
-//            .loginProcessingUrl("/users/signIn")
-//            .defaultSuccessUrl("/users/main") //로그인 성공 시 해당 url 반환
-//            .usernameParameter("email") //로그인 시 사용할 파라미터 이름으로 email 설정
-//            .passwordParameter("password")
-//            .failureUrl("/users/signIn"))
-//        .logout(customizer -> customizer
-//            .logoutUrl("/users/logout")
-//            .logoutSuccessUrl("/users/login")
-//            .deleteCookies("JSESSIONID"));
     return http.build();
   }
 

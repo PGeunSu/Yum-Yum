@@ -41,16 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain chain) throws ServletException, IOException {
-//    if (token != null) {
-//      TokenDto tokenDto = provider.getAuthentication(token);
-//      List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-//      AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-//          tokenDto, "", authorityList);
-//      authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//      //객체 등록
-//      SecurityContextHolder.getContext().setAuthentication(authentication);
-//    }
-//    chain.doFilter(request, response);
     //Jwt 토큰 추출
     String tokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -89,9 +79,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   }
 
-//  private String resolveToken(HttpServletRequest request) {
-//    String token = request.getHeader(TOKEN_HEADER);
-//
-//    return null;
-//  }
 }

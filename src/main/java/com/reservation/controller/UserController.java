@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,18 @@ public class UserController {
   private final UserService userService;
   private final UserRepository userRepository;
 
+  //메인화면
+  @GetMapping("/main")
+  public String mainPage(Model model, Authentication auth) {
+    if (auth != null){
+      User user = userService.getUser(auth.getName());
+      if (user != null){
+        model.addAttribute("name", user.getName());
+        model.addAttribute("user",user);
+      }
+    }
+    return "home";
+  }
 
   @GetMapping("/signUp")
   public String signUp(Model model) {
@@ -70,33 +83,20 @@ public class UserController {
       model.addAttribute("errorMessage", e.getMessage());
     }
 
-    return "redirect:/users/signIn";
+    return "redirect:/users/verifyPage";
   }
-
-  //메인화면
-  @GetMapping("/main")
-  public String mainPage(Model model, Authentication auth) {
-    if (auth != null){
-      User user = userService.getUser(auth.getName());
-      if (user != null){
-        model.addAttribute("name", user.getName());
-      }
-    }
-
-    return "home";
+  //회원 인증 페이지
+  @GetMapping("/verifyPage")
+  public String verifyPage(Model model){
+    return "user/verify";
   }
-
   //회원가입 인증
   @GetMapping("/verify")
   public String verifyUser(String email, String code, Model model) {
-    try {
-      userService.verifyEmail(email, code);
-    } catch (IllegalStateException e) {
-      model.addAttribute("errorMessage", e.getMessage());
-      return "user/verify";
-    }
-
-    return "redirect:/";
+    userService.verifyEmail(email, code);
+    model.addAttribute("message", "인증이 완료되었습니다. 로그인 해주세요");
+    model.addAttribute("nextUrl", "/users/signIn");
+    return "printMessage";
   }
 
   //로그인뷰
@@ -110,63 +110,60 @@ public class UserController {
   @PostMapping("/signIn")
   public String login(@Valid @ModelAttribute SignInForm form, BindingResult bindingResult,
       HttpServletResponse response) {
-
     User user = userService.login(form);
-
     if (user == null) {
       bindingResult.reject("loginFail", "이메일 또는 비밀번호가 틀렸습니다");
     }
-
     if (bindingResult.hasErrors()) {
       return "user/signIn";
     }
 
-    String token = userService.loginToken(form);
-
-    Cookie cookie = new Cookie("jwtToken", token);
-    cookie.setMaxAge(60 * 60); //시간
-    response.addCookie(cookie);
+    userService.loginToken(form,  response);
 
     return "redirect:/users/main";
   }
 
-  @GetMapping("/info")
+  @GetMapping("/myPage")
   public String userInfo(Model model, Authentication auth) {
     User user = userService.getUser(auth.getName());
     model.addAttribute("user",user);
 
-    return "info";
+    return "user/myPage";
   }
-
 
   //로그아웃
   @GetMapping("/logout")
   public String logout(HttpServletResponse response) {
     //쿠키 파기
-    Cookie cookie = new Cookie("jwtToken", null);
-    cookie.setMaxAge(0);
-    response.addCookie(cookie);
+    response.addCookie(userService.logout());
     return "redirect:/users/signIn";
   }
 
-  @GetMapping("/signIn/error")
-  public String loginError(Model model) {
-    model.addAttribute("loginErrorMsg", "아이디 또는 비밀번호를 확인해주세요");
-    return "/user/signIn";
+  //회원정보 수정
+  @GetMapping("/modify/{userId}")
+  public String modify(Model model, @PathVariable Long userId) {
+    Optional<User> user = userRepository.findById(userId);
+    model.addAttribute("user", user);
+    return "user/modify";
   }
 
   //회원정보 수정
-  @PutMapping("/modify")
-  public ResponseEntity<String> modify(@RequestBody UserModifiedDto dto) {
+  @PostMapping("/modify")
+  public String modify(@Valid UserModifiedDto dto, Model model) {
     userService.modify(dto);
-    return ResponseEntity.ok("수정이 완료되었습니다");
+    model.addAttribute("message", "회원 수정이 완료되었습니다.");
+    model.addAttribute("nextUrl", "/users/myPage");
+    return "printMessage";
   }
 
   //회원 탈퇴
-  @DeleteMapping("/delete")
-  public ResponseEntity<String> delete(@AuthenticationPrincipal Long id) {
-    userService.delete(id);
-    return ResponseEntity.ok("탈퇴가 완료되었습니다");
+  @GetMapping("/delete/{userId}")
+  public String delete(@PathVariable Long userId, Model model, HttpServletResponse response) {
+    userService.delete(userId, response);
+
+    model.addAttribute("message", "탈퇴가 완료되었습니다");
+    model.addAttribute("nextUrl", "/users/main");
+    return "printMessage";
   }
 
 

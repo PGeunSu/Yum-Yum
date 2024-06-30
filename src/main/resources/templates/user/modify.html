@@ -31,7 +31,7 @@
       <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">INPUT ERROR</p>
     </div>
     <button class="btn btn-primary">회원 수정</button>
-    <button type="button" class="btn btn-primary" onClick="window.history.back();">취소</button>
-    <button type="button" class="btn btn-primary" th:field="*{id}" onClick="location.href='/users/delete/{id}">회원 탈퇴</button>
+    <button type="button" class="btn btn-secondary" onClick="window.history.back();">취소</button>
+    <button type="button" class="btn btn-danger" th:onclick="|location.href='@{/users/delete/{userId} (userId=${id})}'|">회원 탈퇴</button>
   </form>
 </div>
