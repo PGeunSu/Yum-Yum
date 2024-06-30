@@ -17,9 +17,12 @@ import com.reservation.exception.Exception;
 import com.reservation.jwt.config.JwtTokenProvider;
 import com.reservation.jwt.dto.TokenDto;
 import com.reservation.jwt.filter.Aes256Util;
+import com.reservation.mailgun.MailgunClient;
 import com.reservation.mailgun.SendMailForm;
 import com.reservation.repository.UserRepository;
 import com.reservation.type.UserType;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -36,6 +39,7 @@ public class UserService{
 
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
+  private final MailgunClient mailgunClient;
 
   private String getRandomCode() {
     return RandomStringUtils.random(10, true, true);
@@ -50,7 +54,7 @@ public class UserService{
 
     return sb.append("Hello ").append(name)
         .append("! Please Click Link for verification. \n")
-        .append("http://localhost:8080/users/verify/?email=")
+        .append("http://localhost:8080/users/verify?email=")
         .append(email)
         .append("&code=")
         .append(code).toString();
@@ -63,12 +67,14 @@ public class UserService{
     } else {
       User u = signUp(form);
       String code = getRandomCode();
-//      SendMailForm mailForm = SendMailForm.builder()
-//          .from("yum-yum@email.com")
-//          .to(form.getEmail())
-//          .subject("Verification Email")
-//          .text(getVerificationEmail(form.getEmail(), form.getName(), code))
-//          .build();
+      SendMailForm mailForm = SendMailForm.builder()
+          .from("yum-yum@email.com")
+          .to(form.getEmail())
+          .subject("Verification Email")
+          .text(getVerificationEmail(form.getEmail(), form.getName(), code))
+          .build();
+
+      mailgunClient.sendEmail(mailForm);
       validateEmail(u.getId(), code);
 
       return UserDto.from(u);
@@ -84,10 +90,18 @@ public class UserService{
     user.modify(dto.getName(), dto.getPassword());
   }
 
+  //로그아웃
+  public Cookie logout(){
+    Cookie cookie = new Cookie("jwtToken", null);
+    cookie.setMaxAge(0);
+    return cookie;
+  }
+
   //회원 탈퇴
   @Transactional
-  public void delete(Long id) {
+  public void delete(Long id, HttpServletResponse response) {
     userRepository.deleteById(id);
+    response.addCookie(logout());
   }
 
   @Transactional
@@ -139,12 +153,16 @@ public class UserService{
     return user.get();
   }
 
-  public String loginToken(SignInForm form) {
-//    User user = findValidUser(form.getEmail(), form.getPassword())
-//        .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
-    User user = userRepository.findByEmail(form.getEmail())
-        .orElseThrow(()-> new Exception(LOGIN_CHECK_FAIL));
-    return jwtTokenProvider.createToken(user);
+  public void loginToken(SignInForm form, HttpServletResponse response) {
+    User user = findValidUser(form.getEmail(), form.getPassword())
+        .orElseThrow(() -> new Exception(LOGIN_CHECK_FAIL));
+    String token = jwtTokenProvider.createToken(user);
+
+    //생성된 jwt토큰으로 쿠키 생성
+    Cookie cookie = new Cookie("jwtToken", token);
+    cookie.setMaxAge(60 * 60); //시간
+    response.addCookie(cookie);
+
   }
 
 }
