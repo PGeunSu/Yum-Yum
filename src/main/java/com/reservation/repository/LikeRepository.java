@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
-  void deleteByUserLoginIdAndBoardId(String loginId, Long boardId);
-  Boolean existsByUserLoginIdAndBoardId(String loginId, Long boardId);
-  List<Like> findAllByUserLoginId(String loginId);
+  void deleteByUserIdAndBoardId(Long loginId, Long boardId);
+  Boolean existsByUserIdAndBoardId(Long loginId, Long boardId);
+  List<Like> findAllByUserId(Long loginId);
 }

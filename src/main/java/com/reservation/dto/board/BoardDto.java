@@ -26,8 +26,8 @@ public class BoardDto {
   public static BoardDto of(Board board) {
     return BoardDto.builder()
         .id(board.getId())
-        .userLoginId(board.getUser().getLoginId())
-        .userNickname(board.getUser().getNickname())
+        .userLoginId(String.valueOf(board.getUser().getId()))
+        .userNickname(board.getUser().getName())
         .title(board.getTitle())
         .body(board.getBody())
         .createdAt(board.getCreatedAt())

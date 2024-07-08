@@ -2,7 +2,7 @@ package com.reservation.entity.board;
 
 import com.reservation.enum_class.BaseEntity;
 import com.reservation.dto.board.BoardDto;
-import com.reservation.enum_class.BoardCategory;
+import com.reservation.type.BoardCategory;
 import com.reservation.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,15 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.util.List;
+import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-
-
 public class Board extends BaseEntity {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,7 @@ public class Board extends BaseEntity {
   private BoardCategory category; // 카테고리
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE) // 회원의 계정이 삭제되었을 경우 같이 삭제
   private User user;      // 작성자
 
   @OneToMany(mappedBy = "board", orphanRemoval = true)

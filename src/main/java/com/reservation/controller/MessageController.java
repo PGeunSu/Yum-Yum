@@ -2,8 +2,10 @@ package com.reservation.controller;
 
 import com.reservation.dto.message.MessageCreateDto;
 import com.reservation.dto.message.MessageDto;
+import com.reservation.dto.user.SignInForm;
 import com.reservation.jwt.dto.TokenDto;
 import com.reservation.service.MessageService;
+import com.reservation.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageController {
 
   private final MessageService messageService;
+  private final UserService userService;
 
   //쪽지 보내기
   @PostMapping()
   public ResponseEntity<?> sendMessage(@RequestBody MessageCreateDto req, @AuthenticationPrincipal TokenDto sender){
     return ResponseEntity.ok(messageService.createMessage(sender, req));
   }
-
 
   //받은 쪽지 전부 확인
   @GetMapping("/receiver")

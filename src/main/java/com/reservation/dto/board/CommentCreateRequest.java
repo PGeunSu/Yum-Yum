@@ -2,7 +2,7 @@ package com.reservation.dto.board;
 
 import com.reservation.entity.board.Board;
 import com.reservation.entity.board.Comment;
- import com.reservation.entity.User;  // 유저연동
+import com.reservation.entity.user.User;
 import lombok.Data;
 
 @Data
@@ -19,4 +19,3 @@ public class CommentCreateRequest {
         .build();
   }
 }
-d

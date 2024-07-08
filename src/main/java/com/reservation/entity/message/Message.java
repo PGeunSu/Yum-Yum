@@ -40,12 +40,12 @@ public class Message {
 
   @ManyToOne(fetch =  FetchType.LAZY)
   @JoinColumn(name = "sender_id")
-  @OnDelete(action = OnDeleteAction.NO_ACTION) // 회원의 계정이 삭제되었을 경우 같이 삭제
+  @OnDelete(action = OnDeleteAction.CASCADE) // 회원의 계정이 삭제되었을 경우 같이 삭제
   private User sender; //송신자
 
   @ManyToOne(fetch =  FetchType.LAZY)
   @JoinColumn(name = "receiver_id")
-  @OnDelete(action = OnDeleteAction.NO_ACTION)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private User receiver; //수신자
 
   @CreatedDate

@@ -21,6 +21,7 @@ public enum ErrorCode {
   ALREADY_VERIFY(HttpStatus.BAD_REQUEST, "이미 인증이 완료되었습니다."),
   WRONG_VERIFICATION(HttpStatus.BAD_REQUEST, "잘못된 인증 시도입니다."),
   EXPIRE_CODE(HttpStatus.BAD_REQUEST, "인증시간이 만료되었습니다."),
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
   //reservation
   ALREADY_EXIST_STORE(HttpStatus.BAD_REQUEST,"이미 존재하는 매장 이름입니다."),
@@ -28,7 +29,10 @@ public enum ErrorCode {
   RESERVATION_ZERO(HttpStatus.BAD_REQUEST, "예약 내역이 없습니다."),
   RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "예약 정보를 찾을 수 없습니다."),
 
-  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
+
+  //Board
+  POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 게시물입니다.");
+
 
 
   private final HttpStatus httpStatus;
