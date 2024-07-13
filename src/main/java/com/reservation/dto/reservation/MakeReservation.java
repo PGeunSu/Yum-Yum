@@ -40,8 +40,6 @@ public class MakeReservation {
         private ReservationStatus status;
         private LocalDateTime createdAt;
 
-
-
         public static Response fromDto(ReservationDto reservationDto) {
             return Response.builder()
                 .time(reservationDto.getTime())
