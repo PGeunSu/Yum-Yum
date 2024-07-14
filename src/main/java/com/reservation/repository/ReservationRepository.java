@@ -13,21 +13,20 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Page<Reservation> findByUserIdOrderByTimeDesc(Long userId, Pageable pageable);
-
-    @Query("select r from Reservation r left join fetch r.restaurant where" +
-        "r.restaurant.id = :restaurantId or r.startTime = :sTime or r.endTime = :eTime")
+    
+    @Query("select r from Reservation r left join fetch r.restaurant where r.restaurant.id = :restaurantId " +
+        "or r.startTime = :sTime or r.endTime = :eTime")
     List<Reservation> findByRestaurantIdAndTime(
         @Param("restaurantId") Long restaurantId,
         @Param("sTime") LocalDateTime sTime,
-        @Param("sTime") LocalDateTime eTime);
+        @Param("eTime") LocalDateTime eTime);
 
     @Query("select r from Reservation r left join fetch r.restaurant where r.restaurant.id = :restaurantId " +
         "and r.startTime >= :sTime and r.endTime <= :eTime")
     List<Reservation> findByRestaurantIdAndTimePeriod(
         @Param("restaurantId") Long restaurantId,
         @Param("sTime") LocalDateTime sTime,
-        @Param("sTime") LocalDateTime eTime);
+        @Param("eTime") LocalDateTime eTime);
 
     List<Reservation> findByUserId(Long userId);
 

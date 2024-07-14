@@ -29,7 +29,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity(name = "reservation")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

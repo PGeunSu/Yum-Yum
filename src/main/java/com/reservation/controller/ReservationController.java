@@ -35,6 +35,7 @@ public class ReservationController {
         @PathVariable("restaurantId") Long restaurantId, Authentication auth
     ){
         User user = userService.getUser(auth.getName());
+
         registerReservation.setUserId(user.getId());
 
         return ResponseEntity.ok(reservationService.register(restaurantId, registerReservation));
