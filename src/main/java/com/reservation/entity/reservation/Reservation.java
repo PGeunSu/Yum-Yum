@@ -1,6 +1,8 @@
 package com.reservation.entity.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.reservation.dto.reservation.ReservationCommand;
+import com.reservation.dto.reservation.util.TimeParsingUtils;
 import com.reservation.entity.user.User;
 import com.reservation.type.ReservationStatus;
 import jakarta.persistence.Column;
@@ -50,18 +52,31 @@ public class Reservation {
     private Restaurant restaurant;
 
     @CreatedDate
-    private String time;
+    private String createdTime; //예약한 시간
 
-    private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startTime; //예약 시작
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endTime; //예약 종료
+
+
     private String place;
     private String name;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
+    public void update(ReservationCommand.UpdateReservation updateReservation) {
+        this.startTime = TimeParsingUtils.formatterLocalDateTime(updateReservation.getStartTime());
+        this.endTime = TimeParsingUtils.formatterLocalDateTime(updateReservation.getEndTime());
+    }
+
     @PrePersist
     public void onPrePersist() {
-        this.time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        this.createdTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 }
+
+
 }
 
