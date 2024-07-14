@@ -1,54 +1,68 @@
-<!-- 가게명 검색하는 메인 페이지: 검색->예약/ 지도마커부분 -->
 <!DOCTYPE html>
-<html>
-<head>
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    .wrap {
-      margin: 200px auto;
-      width: 500px;
-    }
-  </style>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<link th:href="@{/css/datePicker.css}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">
 
-<body>
-<main id="container">
-  <div class="wrap">
-    <div class="booking-box">
-      <h1>매장검색</h1>
-      <div>
-        <form action="${contextPath }/reservation/request" method="post"
-              class="cf" name="select">
-          <input type="hidden" name="userId" id="userId"
-                 value="${successLoginUser  }">
-          <iframe src = "map.html" width = "775" height = "400"  ></iframe>
-          <br>
-          <br>
-          <br>
-          <p>
-            </select> <label for="stringsize">고객수(명)</label> <select name="size"
-                                                                     id="stringsize" onchange="checkPrice()">
-            <option value="0">선택하세요</option>
-            <option value="5000">2인</option>
-            <option value="6000">4인</option>
-            <option value="7000">5인-8인이하</option>
-          </select>
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function(){
 
-            </select> <label for="stringsize">시각</label> <select name="size"
-                                                                  onchange="checkPrice()">
-            <option value="0">선택하세요</option>
-            <option value="5000">점심</option>
-            <option value="6000">저녁</option>
-          </select>
-          </p>
-          <label>예약할 매장명</label> <input type="text" name="name"
-                                                          required="/request" placeholder="입력 후 Enter -> 예약.">
+$('.datepicker').datepicker({
+   format: 'dd-mm-yyyy',
+   autoclose: true,
+   startDate: '0d'
+});
+
+$('.cell').click(function(){
+   $('.cell').removeClass('select');
+   $(this).addClass('select');
+});
+
+});
+  </script>
+</th:block>
+<div layout:fragment="content">
+<div class="container-fluid px-0 px-sm-4 mx-auto">
+  <div class="row justify-content-center mx-0">
+    <div class="col-lg-10">
+      <div class="card border-0">
+        <form autocomplete="off">
+          <div class="card-header bg-dark">
+            <div class="mx-0 mb-0 row justify-content-sm-center justify-content-start px-1">
+              <input type="text" id="dp1" class="datepicker" placeholder="Pick Date" name="date" readonly><span class="fa fa-calendar"></span>
+            </div>
+          </div>
+          <div class="card-body p-3 p-sm-5">
+            <div class="row text-center mx-0">
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">10:00AM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">11:00AM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">12:00AM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">1:00PM</div></div>
+            </div>
+            <div class="row text-center mx-0">
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">2:00PM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">3:00PM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">4:00PM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">5:00PM</div></div>
+            </div>
+            <div class="row text-center mx-0">
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">6:00PM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">7:00PM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">8:00PM</div></div>
+              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">9:00PM</div></div>
+            </div>
+          </div>
         </form>
       </div>
     </div>
   </div>
-</main>
-</body>
-</html>
+</div>
+</div>
