@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    
+
     @Query("select r from Reservation r left join fetch r.restaurant where r.restaurant.id = :restaurantId " +
-        "or r.startTime = :sTime or r.endTime = :eTime")
+        "and r.startTime = :sTime or r.endTime = :eTime")
     List<Reservation> findByRestaurantIdAndTime(
         @Param("restaurantId") Long restaurantId,
         @Param("sTime") LocalDateTime sTime,

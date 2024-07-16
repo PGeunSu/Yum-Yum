@@ -84,7 +84,7 @@ public class ReservationController {
     }
 
     //예약 삭제
-    @PutMapping("/delete/{reservationId}")
+    @DeleteMapping("/delete/{reservationId}")
     public ResponseEntity<String> deleteReservation(
         @PathVariable("reservationId") Long reservationId
     ){
