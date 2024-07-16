@@ -64,16 +64,14 @@ public class ReservationService {
 
     //예약 중복 체크
     List<Reservation> findReservation = reservationRepository.findByRestaurantIdAndTime(restaurantId, startTime, endTime);
-    if (findReservation != null){
+    if (!findReservation.isEmpty()){
       throw new Exception(DUPLICATED_RESERVATION);
     }
 
-    Reservation reservation = registerReservation.toEntity(
+    return registerReservation.toEntity(
         validateFindByIdDto.getUser(),
         validateFindByIdDto.getRestaurant()
     );
-
-    return reservation;
   }
 
   // 해당  예약 조회 (시간 이용)
