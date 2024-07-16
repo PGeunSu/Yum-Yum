@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.reservation.dto.reservation.ReservationCommand;
 import com.reservation.dto.reservation.util.TimeParsingUtils;
 import com.reservation.entity.user.User;
-import com.reservation.type.ReservationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,7 +23,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @NoArgsConstructor
@@ -60,12 +55,10 @@ public class Reservation {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime; //예약 종료
 
+    private String place; //상호명
 
-    private String place;
-    private String name;
+    private String name; //예약자명
 
-    @Enumerated(EnumType.STRING)
-    private ReservationStatus reservationStatus;
 
     public void update(ReservationCommand.UpdateReservation updateReservation) {
         this.startTime = TimeParsingUtils.formatterLocalDateTime(updateReservation.getStartTime());

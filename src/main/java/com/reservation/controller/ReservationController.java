@@ -3,6 +3,9 @@ package com.reservation.controller;
 import com.reservation.dto.reservation.ReservationCommand;
 import com.reservation.dto.reservation.ReservationDto;
 import com.reservation.entity.user.User;
+import com.reservation.exception.ErrorCode;
+import com.reservation.exception.Exception;
+import com.reservation.repository.UserRepository;
 import com.reservation.service.ReservationService;
 import com.reservation.service.UserService;
 import java.util.List;
@@ -52,7 +55,7 @@ public class ReservationController {
     }
 
     //해당 예약 조회 (시간 사용 x)
-    @GetMapping("/restaurantId")
+    @GetMapping("/{restaurantId}")
     public ResponseEntity<List<ReservationDto>> getRestaurantId(
         @PathVariable("restaurantId") Long restaurantId
     ){
@@ -60,7 +63,7 @@ public class ReservationController {
     }
 
     //해당 유저 예약 조회
-    @GetMapping("{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<ReservationDto>> getByUserId(
         @PathVariable("userId") Long userId
     ){

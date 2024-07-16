@@ -28,6 +28,8 @@ public class ReservationCommand {
           .endTime(TimeParsingUtils.formatterLocalDateTime(endTime))
           .user(user)
           .restaurant(restaurant)
+          .place(restaurant.getPost())
+          .name(user.getName())
           .build();
     }
   }

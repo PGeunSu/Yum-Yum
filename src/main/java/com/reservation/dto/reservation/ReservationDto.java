@@ -18,21 +18,12 @@ public class ReservationDto {
   private String endTime;
 
   private Long userId;
+
   private String userEmail;
 
   private Long restaurantId;
-  private String post; //상호명
 
-//        public static ReservationDto fromEntity(Reservation reservation){
-//            return ReservationDto.builder()
-//                .id(reservation.getId())
-//                .time(String.valueOf(reservation.getTime()))
-//                .place(reservation.getPlace())
-//                .name(reservation.getName())
-//                .status(reservation.getReservationStatus())
-//                .createdAt(reservation.getCreatedAt())
-//                .build();
-//        }
+  private String post; //상호명
 
   public static ReservationDto toDto(Reservation reservation) {
     return ReservationDto.builder()

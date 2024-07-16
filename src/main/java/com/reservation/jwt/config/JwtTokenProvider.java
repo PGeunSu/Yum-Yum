@@ -53,13 +53,6 @@ public class JwtTokenProvider {
        .build()
        .parseClaimsJws(token)
        .getBody();
-
-//   return TokenDto.builder()
-//       .id(Long.valueOf(claims.getSubject()))
-//       .email(claims.get("email", String.class))
-//       .name(claims.get("name", String.class))
-//       .role(UserType.valueOf(claims.get("role", String.class)))
-//       .build();
   }
 
 
