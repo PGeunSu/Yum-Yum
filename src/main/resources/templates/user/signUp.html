@@ -11,17 +11,6 @@
   </style>
 </th:block>
 
-<th:block layout:fragment="script">
-  <script th:inline="javascript">
-    $(function(){
-      const errorMessage = [[${errorMessage}]];
-      if(errorMessage != null){
-        alert(errorMessage);
-      }
-    });
-  </script>
-</th:block>
-
 <div layout:fragment="content">
   <form th:action="@{/users/signUp}" method="post" role="form" th:object="${signUpForm}">
 

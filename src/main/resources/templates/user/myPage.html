@@ -11,5 +11,7 @@
     <div th:text="|role : ${user.role}|"></div>
     <div th:text="|id: ${user.id}|"></div>
     <a th:onclick="|location.href='@{/users/modify/{userId} (userId=${user.id})}'|">회원수정</a>
+    </br>
+    <a th:onclick="|location.href='@{/messages}'|">쪽지 보내기</a>
   </div>
 </div>
