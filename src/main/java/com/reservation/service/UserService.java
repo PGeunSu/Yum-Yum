@@ -94,6 +94,7 @@ public class UserService{
   public Cookie logout(){
     Cookie cookie = new Cookie("jwtToken", null);
     cookie.setMaxAge(0);
+    cookie.setPath("/");
     return cookie;
   }
 
@@ -160,7 +161,10 @@ public class UserService{
 
     //생성된 jwt토큰으로 쿠키 생성
     Cookie cookie = new Cookie("jwtToken", token);
-    cookie.setMaxAge(60 * 60); //시간
+    cookie.setMaxAge(60 * 60); //1시간
+    cookie.setSecure(true);
+    cookie.setHttpOnly(false);
+    cookie.setPath("/");
     response.addCookie(cookie);
 
   }

@@ -68,8 +68,7 @@ public class UserController {
 
   //회원가입
   @PostMapping("/signUp")
-  public String signUp(@Valid SignUpForm form, BindingResult bindingResult,
-      Model model) {
+  public String signUp(@Valid SignUpForm form, BindingResult bindingResult) {
 
     if (userRepository.existsByEmail(form.getEmail())) {
       bindingResult.addError(new FieldError("form", "email", "이메일이 중복됩니다."));
@@ -77,11 +76,7 @@ public class UserController {
     if (bindingResult.hasErrors()) {
       return "user/signUp";
     }
-    try {
-      userService.userSignUp(form);
-    }catch (IllegalStateException e){
-      model.addAttribute("errorMessage", e.getMessage());
-    }
+    userService.userSignUp(form);
 
     return "redirect:/users/verifyPage";
   }
