@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<th:block layout:fragment="css">
+  <style>
+    .fieldError{
+      color: #bd2310;
+    }
+  </style>
+</th:block>
+<body>
+<div layout:fragment="content" class="row">
+  <form class="offset-3 col-6 form-group">
+      <div th:text="|받는사람 : ${message.receiverName}|"></div>
+      <div th:text="|보낸사람 : ${message.senderName}|"></div>
+    <div>
+      <label>제목 : </label>
+      <label>
+        <textarea th:text="${message.title}" th:readonly="readonly"></textarea>
+      </label>
+    </div>
+    <div>
+      <label>내용 : </label>
+      <label>
+        <textarea th:text="${message.content}"th:readonly="readonly"></textarea>
+      </label>
+    </div>
+    <br/>
+  </form>
+</div>
+</body>
+</html>

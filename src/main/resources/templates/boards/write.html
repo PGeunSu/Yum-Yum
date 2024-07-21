@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">>
-<!--<head th:replace="fragments/header.html :: head" />-->
+      layout:decorate="~{layout/layout}">
 <body>
-<!--<div th:replace="fragments/header.html :: header (${category})"/>-->
 <div layout:fragment="content" class="row">
   <form class="offset-3 col-6 form-group" th:object="${boardCreateRequest}" th:method="post"
-        th:action="|@{/boards/{category} (category = ${category})}|" enctype="multipart/form-data">
+        th:action="|@{/boards/{category}/write (category = ${category})}|" enctype="multipart/form-data">
     <div>
       <label th:for="title">제목 : </label>
       <input type="text" th:field="*{title}" style="width: 50%">
@@ -24,11 +22,12 @@
       <input type="file" th:field="*{uploadImage}" style="width: 50%">
     </div>
     <br/>
-    <div align="center">
+    <div style="text-align: center">
       <button class="btn post-btn" type="submit">등록</button>
     </div>
   </form>
 </div>
+</body>
 <script th:inline="javascript">
   $("#uploadImage").on("change", (e) => {
 
@@ -64,5 +63,4 @@
       }
   }
 </script>
-</body>
 </html>
