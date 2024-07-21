@@ -18,6 +18,7 @@ public class BoardDto {
   private String title;
   private String body;
   private Integer likeCnt;
+  private Integer commentCnt;
   private LocalDateTime createdAt;
   private LocalDateTime lastModifiedAt;
   private MultipartFile newImage;
@@ -33,6 +34,7 @@ public class BoardDto {
         .createdAt(board.getCreatedAt())
         .lastModifiedAt(board.getLastModifiedAt())
         .likeCnt(board.getLikes().size())
+        .commentCnt(board.getComments().size())
         .uploadImage(board.getUploadImage())
         .build();
   }

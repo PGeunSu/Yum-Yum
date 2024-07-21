@@ -66,15 +66,15 @@ public class LikeService {
         .orElseThrow(() -> new Exception(POST_NOT_FOUND));
   }
 
-  public User getLoginUser(TokenDto userId) {
-    return userRepository.findById(userId.getId())
+  public User getLoginUser(Long userId) {
+    return userRepository.findById(userId)
         .orElseThrow(() -> new Exception(USER_NOT_FOUND));
   }
 
   @Transactional
-  public void changeLike(Long userId, TokenDto loginId){
+  public void changeLike(Long userId){
     Like boardLike = getLikePost(userId); //게시물에 좋아요한 Id 가져오기
-    User loginUser = getLoginUser(loginId); //로그인 유저 Id 가쟈오기
+    User loginUser = getLoginUser(userId); //로그인 유저 Id 가쟈오기
     Board board = boardLike.getBoard(); // 좋아요 누른 게시물 가쟈오기
 
     //자신이 좋아요를 눌렀던 게시물이 아니라면
