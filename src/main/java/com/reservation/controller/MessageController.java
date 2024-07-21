@@ -1,19 +1,12 @@
 package com.reservation.controller;
 
-import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
-
 import com.reservation.dto.message.MessageCreateDto;
-import com.reservation.dto.message.MessageDto;
 import com.reservation.entity.user.User;
-import com.reservation.exception.ErrorCode;
-import com.reservation.exception.Exception;
 import com.reservation.repository.MessageRepository;
 import com.reservation.repository.UserRepository;
 import com.reservation.service.MessageService;
 import com.reservation.service.UserService;
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -64,30 +57,27 @@ public class MessageController {
 
   //받은 쪽지 전부 확인
   @GetMapping("/receiver")
-  public ResponseEntity<List<MessageDto>> receiveMessageList(Authentication auth) {
+  public String receiveMessageList(Model model, Authentication auth) {
     User user = userService.getUser(auth.getName());
-    return ResponseEntity.ok(messageService.receiveMessageList(user));
+    model.addAttribute("receiver", messageService.receiveMessageList(user));
+    return "message/receiverList";
   }
 
-  //받은 쪽지 중 한 개 확인
-  @GetMapping("/receiver/{id}")
-  public ResponseEntity<MessageDto> receiveMessage(@PathVariable Long id, Authentication auth) {
+  //쪽지 상세정보
+  @GetMapping("/detail/{messageId}")
+  public String detailMessage(@PathVariable Long messageId, Authentication auth, Model model) {
     User user = userService.getUser(auth.getName());
-    return ResponseEntity.ok(messageService.receiveMessage(id, user));
+    model.addAttribute("message", messageService.detailMessage(messageId, user));
+
+    return "message/messageDetail";
   }
 
   //보낸 쪽지 전부 확인
   @GetMapping("/sender")
-  public ResponseEntity<List<MessageDto>> sendMessageList(Authentication auth) {
+  public String sendMessageList(Model model, Authentication auth) {
     User user = userService.getUser(auth.getName());
-    return ResponseEntity.ok(messageService.sendMessageList(user));
-  }
-
-  //보낸 쪽지 한 개 확인
-  @GetMapping("/sender/{id}")
-  public ResponseEntity<MessageDto> sendMessage(@PathVariable Long id, Authentication auth) {
-    User user = userService.getUser(auth.getName());
-    return ResponseEntity.ok(messageService.sendMessage(id, user));
+    model.addAttribute("sender", messageService.sendMessageList(user));
+    return "message/senderList";
   }
 
   //받은 쪽지 삭제

@@ -14,12 +14,15 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MessageService {
 
+  private static final Logger log = LoggerFactory.getLogger(MessageService.class);
   private final MessageRepository messageRepository;
   private final UserRepository userRepository;
 
@@ -31,6 +34,11 @@ public class MessageService {
   private User getTokenUser(User sender){
     return userRepository.findById(sender.getId())
         .orElseThrow(() -> new Exception(USER_NOT_FOUND));
+  }
+
+  public Message getMessage(Long messageId){
+    return messageRepository.findById(messageId)
+        .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
   }
 
   //쪽지 생성
@@ -63,7 +71,7 @@ public class MessageService {
 
   //해당 id 메세지 하나만
   @Transactional
-  public MessageDto receiveMessage(Long id, User receiver){
+  public MessageDto detailMessage(Long id, User receiver){
     Message message = messageRepository.findById(id)
         .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
     validateReceiverMessage(receiver, message);
@@ -91,15 +99,6 @@ public class MessageService {
         .collect(Collectors.toList());
   }
 
-  //해당 id 메세지 하나만
-  @Transactional
-  public MessageDto sendMessage(Long id, User sender){
-    Message message = messageRepository.findById(id)
-        .orElseThrow(() -> new Exception(MESSAGE_NOT_FOUND));
-    validateSendMessage(sender, message);
-
-    return MessageDto.toDto(message);
-  }
   //송신 메세지 유효성 검사
   private void validateSendMessage(User member, Message message) {
     if (!message.isSender(member)){

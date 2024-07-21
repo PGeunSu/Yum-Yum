@@ -1,6 +1,7 @@
 package com.reservation.dto.message;
 
 import com.reservation.entity.message.Message;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class MessageDto {
   private String content;
   private String senderName;
   private String receiverName;
+  private LocalDateTime time;
 
   public static MessageDto toDto(Message message){
     return new MessageDto(
@@ -22,7 +24,8 @@ public class MessageDto {
         message.getTitle(),
         message.getContent(),
         message.getSender().getName(),
-        message.getReceiver().getName()
+        message.getReceiver().getName(),
+        message.getCreatedAt()
     );
   }
 

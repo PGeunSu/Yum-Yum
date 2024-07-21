@@ -4,23 +4,18 @@ import com.reservation.dto.board.BoardCreateRequest;
 import com.reservation.dto.board.BoardDto;
 import com.reservation.dto.board.BoardSearchRequest;
 import com.reservation.dto.board.CommentCreateRequest;
-import com.reservation.jwt.dto.TokenDto;
+import com.reservation.entity.user.User;
 import com.reservation.type.BoardCategory;
 import com.reservation.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 @Controller
 @RequestMapping("/boards")
@@ -30,6 +25,7 @@ public class BoardController {
   private final BoardService boardService;
   private final LikeService likeService;
   private final CommentService commentService;
+  private final UserService userService;
 //  private final S3UploadService s3UploadService;
   // private final UploadImageService uploadImageService; => 로컬 디렉토리에 저장할 때 사용 => S3UploadService 대신 사용
 
@@ -69,7 +65,7 @@ public class BoardController {
   }
 
   @GetMapping("/{category}/write")
-  public String boardWritePage(@PathVariable String category, Model model) {
+  public String boardWrite(@PathVariable String category, Model model) {
     BoardCategory boardCategory = BoardCategory.of(category);
     if (boardCategory == null) {
       model.addAttribute("message", "카테고리가 존재하지 않습니다.");
@@ -77,26 +73,27 @@ public class BoardController {
       return "printMessage";
     }
 
-    model.addAttribute("category", category);
     model.addAttribute("boardCreateRequest", new BoardCreateRequest());
     return "boards/write";
   }
 
-  @PostMapping("/{category}")
-  public String boardWrite(@PathVariable String category, @ModelAttribute BoardCreateRequest req, Model model)
+  @PostMapping("/{category}/write")
+  public String boardWrite(BoardCreateRequest req, @PathVariable String category,  Model model, Authentication auth)
       throws IOException {
     BoardCategory boardCategory = BoardCategory.of(category);
-    if (boardCategory == null) {
-      model.addAttribute("message", "카테고리가 존재하지 않습니다.");
-      model.addAttribute("nextUrl", "/");
-    }
-    return "printMessage";
+    User user = userService.getUser(auth.getName());
+
+    boardService.writeBoard(req, boardCategory, user.getId());
+
+    model.addAttribute("category", category);
+
+    return "redirect:/boards/{category}";
   }
 
     @GetMapping("/{category}/{boardId}")
     public String boardDetailPage (@PathVariable String category, @PathVariable Long boardId, Model
-    model,
-        @AuthenticationPrincipal TokenDto user){
+    model, Authentication auth){
+      User user = userService.getUser(auth.getName());
       if (user != null) {
         model.addAttribute("loginUserLoginId", user.getName());
         model.addAttribute("likeCheck", likeService.checkLike(user.getId(), boardId));
