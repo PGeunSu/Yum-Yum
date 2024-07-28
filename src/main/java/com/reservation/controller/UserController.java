@@ -57,7 +57,7 @@ public class UserController {
         model.addAttribute("user",user);
       }
     }
-    return "home";
+    return "index";
   }
 
   @GetMapping("/signUp")
