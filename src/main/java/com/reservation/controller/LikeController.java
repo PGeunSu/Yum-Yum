@@ -1,8 +1,10 @@
 package com.reservation.controller;
 
+import com.reservation.entity.user.User;
 import com.reservation.jwt.dto.TokenDto;
 import com.reservation.service.BoardService;
 import com.reservation.service.LikeService;
+import com.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,10 +20,12 @@ public class LikeController {
 
   private final LikeService likeService;
   private final BoardService boardService;
+  private final UserService userService;
 
   @GetMapping("/add/{boardId}")
-  public String changeLike(@PathVariable Long boardId, @AuthenticationPrincipal TokenDto userId) {
-    likeService.changeLike(boardId,userId);
+  public String changeLike(@PathVariable Long boardId, Authentication auth) {
+    User user = userService.getUser(auth.getName());
+    likeService.changeLike(user.getId());
     return "redirect:/boards/" + boardService.getCategory(boardId) + "/" + boardId;
   }
 //

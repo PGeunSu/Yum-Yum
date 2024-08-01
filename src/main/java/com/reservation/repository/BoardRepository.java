@@ -14,11 +14,11 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-  Page<Board> findAllByCategoryAndUserRoleNot(BoardCategory category, UserType userRole, PageRequest pageRequest);
-  Page<Board> findAllByCategoryAndTitleContainsAndUserRoleNot(BoardCategory category, String title, UserType userRole, PageRequest pageRequest);
-  Page<Board> findAllByCategoryAndUserNameContainsAndUserRoleNot(BoardCategory category, String nickname, UserType userRole, PageRequest pageRequest);
+  Page<Board> findAllByCategory(BoardCategory category, PageRequest pageRequest);
+  Page<Board> findAllByCategoryAndTitleContains(BoardCategory category, String title, PageRequest pageRequest);
+  Page<Board> findAllByCategoryAndUserNameContains(BoardCategory category, String nickname, PageRequest pageRequest);
   List<Board> findAllByUser(User loginId);
-  List<Board> findAllByCategoryAndUserRole(BoardCategory category, UserType userRole);
+  List<Board> findAllByCategory(BoardCategory category);
   Long countAllByUserRole(UserType userRole);
-  Long countAllByCategoryAndUserRoleNot(BoardCategory category, UserType userRole);
+  Long countAllByCategory(BoardCategory category);
 }

@@ -3,6 +3,7 @@ package com.reservation.repository;
 import com.reservation.entity.message.Message;
 import com.reservation.entity.user.User;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

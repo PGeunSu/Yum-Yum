@@ -5,16 +5,17 @@ import static com.reservation.exception.ErrorCode.USER_NOT_FOUND;
 import com.reservation.dto.board.BoardCntDto;
 import com.reservation.dto.board.BoardCreateRequest;
 import com.reservation.dto.board.BoardDto;
+import com.reservation.dto.message.MessageDto;
 import com.reservation.entity.board.*;
 import com.reservation.entity.user.User;
 import com.reservation.exception.Exception;
-import com.reservation.jwt.dto.TokenDto;
 import com.reservation.type.BoardCategory;
 import com.reservation.repository.BoardRepository;
 import com.reservation.repository.CommentRepository;
 import com.reservation.repository.LikeRepository;
 import com.reservation.repository.UserRepository;
 import com.reservation.type.UserType;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,16 +43,18 @@ public class BoardService {
   public Page<Board> getBoardList(BoardCategory category, PageRequest pageRequest, String searchType, String keyword) {
     if (searchType != null && keyword != null) {
       if (searchType.equals("title")) {
-        return boardRepository.findAllByCategoryAndTitleContainsAndUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
+        return boardRepository.findAllByCategoryAndTitleContains(category, keyword, pageRequest);
       } else {
-        return boardRepository.findAllByCategoryAndUserNameContainsAndUserRoleNot(category, keyword, UserType.ADMIN, pageRequest);
+        return boardRepository.findAllByCategoryAndUserNameContains(category, keyword, pageRequest);
       }
     }
-    return boardRepository.findAllByCategoryAndUserRoleNot(category, UserType.ADMIN, pageRequest);
+    return boardRepository.findAllByCategory(category, pageRequest);
   }
 
-  public List<Board> getNotice(BoardCategory category) {
-    return boardRepository.findAllByCategoryAndUserRole(category, UserType.ADMIN);
+  public List<BoardDto> getNotice(BoardCategory category) {
+     return boardRepository.findAllByCategory(category)
+        .stream().map(BoardDto::of)
+        .collect(Collectors.toList());
   }
 
   public BoardDto getBoard(Long boardId, String category) {
@@ -66,8 +69,8 @@ public class BoardService {
   }
 
   @Transactional
-  public Long writeBoard(BoardCreateRequest req, BoardCategory category, TokenDto loginId) throws IOException {
-    User loginUser = userRepository.findById(loginId.getId())
+  public Long writeBoard(BoardCreateRequest req, BoardCategory category, Long loginId) throws IOException {
+    User loginUser = userRepository.findById(loginId)
         .orElseThrow((() -> new Exception(USER_NOT_FOUND)));
 
     Board savedBoard = boardRepository.save(req.toEntity(category, loginUser));
@@ -130,20 +133,20 @@ public class BoardService {
     return board.getCategory().toString().toLowerCase();
   }
 
-  public List<Board> findMyBoard(String category, TokenDto loginId) {
+  public List<Board> findMyBoard(String category, Long loginId) {
     if (category.equals("board")) {
-      User user = userRepository.findById(loginId.getId())
+      User user = userRepository.findById(loginId)
           .orElseThrow(() -> new Exception(USER_NOT_FOUND));
       return boardRepository.findAllByUser(user);
     } else if (category.equals("like")) {
-      List<Like> likes = likeRepository.findAllByUserId(loginId.getId());
+      List<Like> likes = likeRepository.findAllByUserId(loginId);
       List<Board> boards = new ArrayList<>();
       for (Like like : likes) {
         boards.add(like.getBoard());
       }
       return boards;
     } else if (category.equals("comment")) {
-      List<Comment> comments = commentRepository.findAllByUserId(loginId.getId());
+      List<Comment> comments = commentRepository.findAllByUserId(loginId);
       List<Board> boards = new ArrayList<>();
       HashSet<Long> commentIds = new HashSet<>();
 

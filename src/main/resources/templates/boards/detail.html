@@ -91,25 +91,25 @@
         <div class="card-body" style="text-align: left;">
           <div>
             <div style="float: left">
-              <h5 class="card-title" th:text="'작성자 : ' + ${comment.user.nickname}"></h5>
+              <h5 class="card-title" th:text="'작성자 : ' + ${comment.user.name}"></h5>
               <h6 class="card-subtitle mb-2 text-muted" th:text="'작성일 : ' + ${#temporals.format(comment.createdAt, 'yy/MM/dd HH:mm')}"></h6>
             </div>
-            <div th:if="${comment.user.loginId == loginUserLoginId}" style="float: right;">
+            <div th:if="${comment.user.id == loginUserLoginId}" style="float: right;">
               <button type="submit" class="btn edit-btn" style="width: fit-content; margin: 0px;">수정</button>
               <button type="button" class="btn del-btn" style="width: fit-content; margin: 0px;"
                       th:onclick="|location.href='@{/comments/{commentId}/delete (commentId=${comment.id})}'|">삭제</button>
             </div>
-            <div th:unless="${comment.user.loginId == loginUserLoginId}" sec:authorize="hasAuthority('ADMIN')" style="float: right;">
+            <div th:unless="${comment.user.id == loginUserLoginId}" sec:authorize="hasAuthority('ADMIN')" style="float: right;">
               <button type="button" class="btn del-btn" style="width: fit-content; margin: 0px;"
                       th:onclick="|location.href='@{/comments/{commentId}/delete (commentId=${comment.id})}'|">삭제</button>
             </div>
           </div>
 
-          <div th:if="${comment.user.loginId == loginUserLoginId}">
+          <div th:if="${comment.user.id == loginUserLoginId}">
                             <textarea rows="3" class="card-text" th:text="${comment.body}" id="body" name="body"
                                       style="margin-bottom: 10px; width: 100%"></textarea>
           </div>
-          <div th:unless="${comment.user.loginId == loginUserLoginId}">
+          <div th:unless="${comment.user.id == loginUserLoginId}">
             <textarea rows="3" class="card-text" th:text="${comment.body}" style="margin-bottom: 10px; width: 100%" readonly></textarea>
           </div>
         </div>

@@ -51,7 +51,7 @@ public class Message {
   @CreatedDate
   private LocalDateTime createdAt;
 
-  public boolean isSender(TokenDto user){
+  public boolean isSender(User user){
     return this.getSender().equals(user);
   }
 

@@ -1,6 +1,6 @@
 package com.reservation.controller;
 
-import com.reservation.dto.reservation.RestaurantList;
+import com.reservation.dto.restaurant.RestaurantDto;
 import com.reservation.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class RestaurantController {
     //매장검색
     @GetMapping("/list")
     public ResponseEntity<?> restaurantList(@RequestParam(value = "p", defaultValue = "1") Integer page,
-        @RequestBody RestaurantList input) {
+        @RequestBody RestaurantDto input) {
         return ResponseEntity.ok(restaurantService.findById(input.getId()));
     }
 }

@@ -1,48 +1,89 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
 
-<th:block layout:fragment="css">
-  <style>
-    .fieldError{
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.88.1">
+  <title>SignUp Template · Bootstrap v5.1</title>
+  <!-- Bootstrap core CSS -->
+  <th:block layout:fragment="css">
+    <link th:href="@{/css/sign.css}" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      .fieldError{
       color: #bd2310;
     }
-  </style>
-</th:block>
-
-<th:block layout:fragment="script">
-  <script th:inline="javascript">
-    $(function(){
-      const errorMessage = [[${errorMessage}]];
-      if(errorMessage != null){
-        alert(errorMessage);
-      }
-    });
-  </script>
-</th:block>
-
-<div layout:fragment="content">
+    </style>
+  </th:block>
+</head>
+<body class="text-center">
+<main class="form-sign">
   <form th:action="@{/users/signUp}" method="post" role="form" th:object="${signUpForm}">
-
-    <div class="form-group">
-      <label th:for="email">이메일 주소</label>
-      <input type="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요">
-      <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect data</p>
-    </div>
-    <div class="form-group">
-      <label th:for="name">이름</label>
-      <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요">
-      <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="fieldError">Incorrect data</p>
+    <h1 class="h3 mb-3 fw-normal"> <a href="/users/main">Yum-Yum</a></h1>
+    <div class="form-floating">
+      <input th:field="*{email}" name="email" type="email" class="form-control" id="floatingInput" placeholder="이메일을 입력해주세요"
+             th:class="${#fields.hasErrors('email')} ? 'form-control fieldError' : 'form-control'"/>
+      <label th:for="email">Email address</label>
+      <p id="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">INPUT ERROR</p>
     </div>
 
-    <div class="form-group">
-      <label th:for="password">비밀번호</label>
-      <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력해주세요">
-      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect data</p>
+    <div class="form-floating">
+      <input th:field="*{name}" name="name" type="text" class="form-control" placeholder="이름을 입력해주세요"
+             th:class="${#fields.hasErrors('name')} ? 'form-control fieldError' : 'form-control'"/>
+      <label th:for="password">Name</label>
+      <p th:if="${#fields.hasErrors('name')}" th:errors="*{password}">INPUT ERROR</p>
     </div>
-    <div style="text-align: center">
-      <button type="submit" class="btn btn-primary" style="">인증하기</button>
+
+    <div class="form-floating">
+      <input th:field="*{password}" name="password" id="password" type="password" oninput="pwCheck()" class="form-control" placeholder="비밀번호를 입력해주세요"
+             th:class="${#fields.hasErrors('password')} ? 'form-control fieldError' : 'form-control'" required/>
+      <label th:for="password">Password</label>
+      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">INPUT ERROR</p>
     </div>
+
+    <div class="form-floating">
+      <input type="password" id="confirm_password" oninput="pwCheck()" class="form-control" placeholder="비밀번호를 재입력해주세요" required/>
+      <label>Confirm Password</label>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">인증하기</button>
+    <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
   </form>
-</div>
+</main>
+</body>
+<script th:inline="javascript">
+  var password = document.getElementById("password")
+   ,confirm_password = document.getElementById("confirm_password");
+
+ function validatePassword(){
+   if(password.value != confirm_password.value) { // 만일 두 인풋 필드값이 같지 않을 경우
+     // setCustomValidity의 값을 지정해 무조건 경고 표시가 나게 하고
+     confirm_password.setCustomValidity("비밀번호가 일치하지 않습니다");
+   }
+   else { // 만일 두 인풋 필드값이 같을 경우
+     // 오류가 없으면 메시지를 빈 문자열로 설정해야한다. 오류 메시지가 비어 있지 않은 한 양식은 유효성 검사를 통과하지 않고 제출되지 않는다.
+     // 따라서 빈값을 주어 submit 처리되게 한다
+     confirm_password.setCustomValidity('');
+   }
+ }
+
+ password.onchange = validatePassword;
+ confirm_password.onkeyup = validatePassword;
+</script>
+</html>

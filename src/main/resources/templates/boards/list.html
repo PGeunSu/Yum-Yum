@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
-<!--<head th:replace="fragments/header.html :: head" />-->
 <body>
-<!--<div th:replace="fragments/header.html :: header (${category})"/>-->
-<div class="row" style=" margin-bottom: 30px" layout:fragment="content">
+<div layout:fragment="content">
+<div class="row" style=" margin-bottom: 30px" >
   <div class="offset-1 col-2">
-    <h5 style="height: 40px; display: flex; align-items: center; margin: 0px; justify-content: right">전체: [[${boards.getTotalElements()}]]개</h5>
+    <h5 style="height: 40px; display: flex; align-items: center; margin: 0px; justify-content: right">
+      전체: [[${boards.getTotalElements()}]]개</h5>
   </div>
-  <div class="col-6" align="center">
+  <div class="col-6" style="align: center">
     <form class="form-group" style="height: 40px;" th:object="${boardSearchRequest}" th:method="get"
           th:action="|@{/boards/{category} (category=${category}, sortType=*{sortType}, searchType=*{searchType}, keyword=*{keyword})}|">
       <select th:field="*{sortType}" style="height: 40px;">
@@ -23,52 +22,59 @@
         <option th:value="title">제목</option>
         <option th:value="nickname">작성자</option>
       </select>
-      <input type="text" th:field="*{keyword}" placeholder="검색 키워드를 입력해주세요" style="height: 100%; width: 60%;">
+      <input type="text" th:field="*{keyword}" placeholder="검색 키워드를 입력해주세요"
+             style="height: 100%; width: 60%;">
       <button class="btn search-btn" type="submit">검색</button>
     </form>
   </div>
-  <div class="col-1" align="right">
-    <button  sec:authorize="!hasAuthority('ADMIN')" class="btn post-btn" type="button"
-             th:onclick="|location.href='@{/boards/{category}/write (category=${category})}'|">글 작성</button>
-    <button  sec:authorize="hasAuthority('ADMIN')" class="btn post-btn" type="button"
-             th:onclick="|location.href='@{/boards/{category}/write (category=${category})}'|">공지 작성</button>
+  <div class="col-2" style="align: right">
+    <button sec:authorize="!hasAuthority('ADMIN')" class="btn post-btn" type="button"
+            th:onclick="|location.href='@{/boards/{category}/write (category=${category})}'|">글 작성
+    </button>
+    <button sec:authorize="hasAuthority('ADMIN')" class="btn post-btn" type="button"
+            th:onclick="|location.href='@{/boards/{category}/write (category=${category})}'|">공지 작성
+    </button>
   </div>
 </div>
-<div class="row">
-  <div class="offset-2 col-8">
-    <table class="table list-table table-hover text-center">
-      <thead style="background-color: #A5F1E9">
-      <tr>
-        <th style="width: 20%">작성자</th>
-        <th style="width: 45%">제목</th>
-        <th style="width: 10%">좋아요</th>
-        <th style="width: 10%">댓글</th>
-        <th style="width: 15%">작성일</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="notice: ${notices}"
-          th:onclick="|location.href='@{/boards/{category}/{boardId} (category=${category}, boardId=${notice.id})}'|"
-          class="notice-tr">
-        <td style="width: 20%" th:text="${notice.user.nickname}"/>
-        <td style="width: 45%" th:text="${notice.title}"/>
-        <td style="width: 10%" th:text="${notice.likeCnt}"/>
-        <td style="width: 10%" th:text="${notice.commentCnt}"/>
-        <td style="width: 15%" th:text="${#temporals.format(notice.createdAt, 'yy/MM/dd HH:mm')}"/>
-      </tr>
-      <tr th:each="board: ${boards}"
-          th:onclick="|location.href='@{/boards/{category}/{boardId} (category=${category}, boardId=${board.id})}'|">
-        <td style="width: 20%" th:text="${board.user.nickname}"/>
-        <td style="width: 45%" th:text="${board.title}"/>
-        <td style="width: 10%" th:text="${board.likeCnt}"/>
-        <td style="width: 10%" th:text="${board.commentCnt}"/>
-        <td style="width: 15%" th:text="${#temporals.format(board.createdAt, 'yy/MM/dd HH:mm')}"/>
-      </tr>
-      </tbody>
-    </table>
+  <div class="row">
+    <div class="offset-2 col-8">
+      <table class="table list-table table-hover text-center">
+        <thead style="background-color: #A5F1E9">
+        <tr>
+          <th style="width: 20%">작성자</th>
+          <th style="width: 45%">제목</th>
+          <th style="width: 10%">좋아요</th>
+          <th style="width: 10%">댓글</th>
+          <th style="width: 15%">작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notices: ${notices}"
+            th:onclick="|location.href='@{/boards/{category}/{boardId} (category=${category}, boardId=${notices.id})}'|"
+            class="notice-tr">
+          <td style="width: 20%" th:text="${notices.userNickname}"/>
+          <td style="width: 45%" th:text="${notices.title}"/>
+          <td style="width: 10%" th:text="${notices.likeCnt}"/>
+          <td style="width: 10%" th:text="${notices.commentCnt}"/>
+          <td style="width: 15%"
+              th:text="${#temporals.format(notices.createdAt, 'yy/MM/dd HH:mm')}"/>
+        </tr>
+        <tr th:each="boards: ${boards}"
+            th:onclick="|location.href='@{/boards/{category}/{boardId} (category=${category}, boardId=${boards.id})}'|">
+          <td style="width: 20%" th:text="${boards.user.name}"/>
+          <td style="width: 45%" th:text="${boards.title}"/>
+          <td style="width: 10%" th:text="${boards.likeCnt}"/>
+          <td style="width: 10%" th:text="${boards.commentCnt}"/>
+          <td style="width: 15%"
+              th:text="${#temporals.format(boards.createdAt, 'yy/MM/dd HH:mm')}"/>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <ul id="paging-ul" class="pagination justify-content-center"></ul>
   </div>
-  <ul id="paging-ul" class="pagination justify-content-center"></ul>
 </div>
+</body>
 <script th:inline="javascript">
   window.onload = function () {
       let nowPage = [[${boards.getNumber()}]] + 1;    // 현재 페이지
@@ -134,5 +140,4 @@
       return url;
   }
 </script>
-</body>
 </html>

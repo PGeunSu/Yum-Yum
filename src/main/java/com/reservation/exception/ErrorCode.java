@@ -24,9 +24,9 @@ public enum ErrorCode {
   ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
   //reservation
-  ALREADY_EXIST_STORE(HttpStatus.BAD_REQUEST,"이미 존재하는 매장 이름입니다."),
+  RESERVATION_TIME_WRONG(HttpStatus.BAD_REQUEST,"예약시간은 최소 1시간에서 최대 4시간을 넘길 수 없습니다."),
   STORE_NOT_FOUND(HttpStatus.BAD_REQUEST,"존재하지 않는 매장입니다."),
-  RESERVATION_ZERO(HttpStatus.BAD_REQUEST, "예약 내역이 없습니다."),
+  DUPLICATED_RESERVATION(HttpStatus.BAD_REQUEST,"이미 예약한 사람이 있습니다."),
   RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "예약 정보를 찾을 수 없습니다."),
 
 

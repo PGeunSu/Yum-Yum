@@ -1,34 +1,38 @@
 package com.reservation.dto.reservation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.reservation.dto.reservation.util.TimeParsingUtils;
 import com.reservation.entity.reservation.Reservation;
-import com.reservation.type.ReservationStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    @Data
-    @Builder
-    public class ReservationDto {
-        private Long id;
+@Data
+@Builder
+public class ReservationDto {
 
-        private String time;
-        private String place;
-        private String name;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  private String startTime;
 
-        @Enumerated(EnumType.STRING)
-        private ReservationStatus status;
-        private LocalDateTime createdAt;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  private String endTime;
 
-        public static ReservationDto fromEntity(Reservation reservation){
-            return ReservationDto.builder()
-                .id(reservation.getId())
-                .time(String.valueOf(reservation.getTime()))
-                .place(reservation.getPlace())
-                .name(reservation.getName())
-                .status(reservation.getReservationStatus())
-                .createdAt(reservation.getCreatedAt())
-                .build();
-        }
+  private Long userId;
+
+  private String userEmail;
+
+  private Long restaurantId;
+
+  private String post; //상호명
+
+  public static ReservationDto toDto(Reservation reservation) {
+    return ReservationDto.builder()
+        .startTime(TimeParsingUtils.formatterString(reservation.getStartTime()))
+        .endTime(TimeParsingUtils.formatterString(reservation.getEndTime()))
+        .userId(reservation.getUser().getId())
+        .userEmail(reservation.getUser().getEmail())
+        .restaurantId(reservation.getRestaurant().getId())
+        .post(reservation.getRestaurant().getPost())
+        .build();
+  }
 }
